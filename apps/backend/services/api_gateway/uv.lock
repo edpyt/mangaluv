@@ -31,6 +31,7 @@ source = { editable = "." }
 dependencies = [
     { name = "dishka" },
     { name = "fastapi", extra = ["all"] },
+    { name = "pydantic-settings" },
 ]
 
 [package.dev-dependencies]
@@ -43,6 +44,7 @@ dev = [
 requires-dist = [
     { name = "dishka", specifier = ">=1.6.0" },
     { name = "fastapi", extras = ["all"], specifier = ">=0.116.1" },
+    { name = "pydantic-settings", specifier = ">=2.10.1" },
 ]
 
 [package.metadata.requires-dev]

@@ -1,20 +1,14 @@
 [project]
 name = "api-gateway"
 version = "0.1.0"
-description = "Add your description here"
+description = "Main API gateway"
 authors = [{ name = "edpyt", email = "edrsa1321s@gmail.com" }]
 requires-python = ">=3.13"
-dependencies = [
-    "dishka>=1.6.0",
-    "fastapi[all]>=0.116.1",
-]
+dependencies = ["fastapi[all]>=0.116.1", "pydantic-settings>=2.10.1"]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [dependency-groups]
-dev = [
-    "pytest>=8.4.1",
-    "pytest-asyncio>=1.1.0",
-]
+dev = ["pytest>=8.4.1", "pytest-asyncio>=1.1.0"]
