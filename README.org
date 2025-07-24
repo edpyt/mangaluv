@@ -1,17 +1,9 @@
 * WIP
 ** Graph
    #+begin_src mermaid
-   sequenceDiagram
-       participant Frontend as Frontend (Vue)
-       participant APIGateway as API Gateway (Robyn)
-       participant AuthService as Auth Service (Python)
-       participant DB as PostgreSQL
-
-       Frontend->>APIGateway: POST /auth/login {email, password}
-       APIGateway->>AuthService: Proxies request
-       AuthService->>DB: Validates user
-       DB-->>AuthService: User data
-       AuthService->>AuthService: Generates JWT
-       AuthService-->>APIGateway: {token, user_id}
-       APIGateway-->>Frontend: Returns token
+   flowchart LR
+       A[Frontend] --> B[API Gateway: FastAPI]
+       B -->|/auth/*| C[Auth Service: FastAPI]
+       B -->|/manga/*| D[Manga Service: Robyn]
+       D --> E[(PostgreSQL)]
    #+end_src
