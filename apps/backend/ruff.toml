@@ -1,0 +1,9 @@
+target-version = "py313"
+line-length = 80
+
+[lint]
+extend-select = ["E501", "UP", "D", "I"]
+
+[lint.per-file-ignores]
+"__init__.py" = ["D104"]
+"**/{tests}/*" = ["D"]

@@ -1,0 +1,17 @@
+* WIP
+** Graph
+   #+begin_src mermaid
+   sequenceDiagram
+       participant Frontend as Frontend (Vue)
+       participant APIGateway as API Gateway (Robyn)
+       participant AuthService as Auth Service (Python)
+       participant DB as PostgreSQL
+
+       Frontend->>APIGateway: POST /auth/login {email, password}
+       APIGateway->>AuthService: Proxies request
+       AuthService->>DB: Validates user
+       DB-->>AuthService: User data
+       AuthService->>AuthService: Generates JWT
+       AuthService-->>APIGateway: {token, user_id}
+       APIGateway-->>Frontend: Returns token
+   #+end_src
