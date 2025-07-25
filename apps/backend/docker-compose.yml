@@ -3,3 +3,26 @@ services:
     build:
       context: ./services/api_gateway/
     ports: ["8000:80"]
+
+  auth_service:
+    build:
+      context: ./services/auth_service/
+    depends_on:
+      - auth_db
+    ports: ["8001:80"]
+    environment:
+      - DB__url=postgresql+asyncpg://auth:pass@auth_db:5432/auth_db
+      - JWT__secret_key=abbbb
+      - JWT__expire_minutes=10
+
+  auth_db:
+    image: postgres:16.9-bookworm
+    environment:
+      POSTGRES_USER: auth
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: auth_db
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
+
+volumes:
+  auth_db_data:

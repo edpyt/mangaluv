@@ -1,5 +1,7 @@
 """Gateway config code."""
 
+from functools import lru_cache
+
 from pydantic import BaseModel, Field, HttpUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -17,5 +19,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
 
-# FIXME: global variable
-settings = Settings()
+@lru_cache
+def get_config() -> Settings:
+    """Dependency get settings function."""
+    return Settings()
