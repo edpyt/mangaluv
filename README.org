@@ -4,6 +4,7 @@
    flowchart LR
        A[Frontend] --> B[API Gateway: FastAPI]
        B -->|/auth/*| C[Auth Service: FastAPI]
+       C --> E[(PostgreSQL)]
        B -->|/manga/*| D[Manga Service: Robyn]
-       D --> E[(PostgreSQL)]
+       D --> G[(PostgreSQL)]
    #+end_src
