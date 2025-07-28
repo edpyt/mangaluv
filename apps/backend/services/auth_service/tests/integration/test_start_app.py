@@ -7,7 +7,10 @@ from testcontainers.postgres import PostgresContainer
 
 
 def test_start_without_db() -> None:
-    with pytest.raises(RuntimeError, match="Can't connect to DB."):
+    with pytest.raises(
+        RuntimeError,
+        match="Cannot establish a connection to the DB",
+    ):
         with TestClient(app) as client:
             client.get("/")
 

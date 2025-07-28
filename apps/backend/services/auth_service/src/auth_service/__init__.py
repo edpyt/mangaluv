@@ -14,7 +14,7 @@ async def _lifespan(_: FastAPI) -> AsyncGenerator:
     async with container() as request_container:
         db = await request_container.get(AsyncSession)
         if not await check_db_health(db):
-            raise RuntimeError("Can't connect to DB.")
+            raise RuntimeError("Cannot establish a connection to the DB")
     yield
 
 
