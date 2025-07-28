@@ -1,6 +1,7 @@
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
+from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -9,8 +10,8 @@ from auth_service.di import setup_container
 
 
 @asynccontextmanager
-async def _lifespan(_: FastAPI) -> AsyncGenerator:
-    container = setup_container()
+async def _lifespan(app: FastAPI) -> AsyncGenerator:
+    container = app.state.dishka_container
     async with container() as request_container:
         db = await request_container.get(AsyncSession)
         if not await check_db_health(db):
@@ -18,5 +19,9 @@ async def _lifespan(_: FastAPI) -> AsyncGenerator:
     yield
 
 
-# FIXME: separate function to setup app
-app = FastAPI(lifespan=_lifespan)
+def setup_app() -> FastAPI:
+    """Create and configure the FastAPI application instance."""
+    app = FastAPI(lifespan=_lifespan)
+    container = setup_container()
+    setup_dishka(container=container, app=app)
+    return app
