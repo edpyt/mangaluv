@@ -37,7 +37,7 @@ class DbProvider(Provider):
         self, settings: FromDishka[Settings]
     ) -> AsyncEngine:
         """Return SQLAlchemy engine (async)."""
-        return create_async_engine(str(settings.db.url))
+        return create_async_engine(str(settings.db.uri))
 
     @provide(scope=Scope.APP)
     def get_sqla_async_sessionmaker(

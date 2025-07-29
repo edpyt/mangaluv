@@ -11,18 +11,16 @@ services:
       - auth_db
     ports: ["8001:80"]
     environment:
-      - DB__url=postgresql+asyncpg://auth:pass@auth_db:5432/auth_db
       - JWT__secret_key=abbbb
       - JWT__expire_minutes=10
+      - DB__uri=$POSTGRES_DB_URI
+    env_file: ".env"
 
   auth_db:
     image: postgres:16.9-bookworm
-    environment:
-      POSTGRES_USER: auth
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DB: auth_db
     volumes:
       - auth_db_data:/var/lib/postgresql/data
+    env_file: ".env"
 
 volumes:
   auth_db_data:

@@ -7,7 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class DbSettings(BaseModel):
     """Database connection config."""
 
-    url: PostgresDsn = PostgresDsn(
+    uri: PostgresDsn = PostgresDsn(
         "postgresql+asyncpg://user:pass@auth_db:5432/auth_db"
     )
 
