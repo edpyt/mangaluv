@@ -6,6 +6,6 @@ COPY . /app
 WORKDIR /app
 RUN uv sync --frozen --no-cache
 
-CMD ["/app/.venv/bin/uvicorn", "src.auth_service:setup_app", \
+CMD ["/app/.venv/bin/uvicorn", "--factory", "src.auth_service:setup_app", \
   "--port", "80", "--host", "0.0.0.0"]
 

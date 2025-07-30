@@ -7,8 +7,7 @@ services:
   auth_service:
     build:
       context: ./services/auth_service/
-    depends_on:
-      - auth_db
+    restart: on-failure
     ports: ["8001:80"]
     environment:
       - JWT__secret_key=abbbb
@@ -21,6 +20,13 @@ services:
     volumes:
       - auth_db_data:/var/lib/postgresql/data
     env_file: ".env"
+    profiles: [prod]
+
+  auth_db_dev:
+    container_name: auth_db
+    image: postgres:16.9-bookworm
+    env_file: ".env"
+    profiles: [dev]
 
 volumes:
   auth_db_data:
