@@ -26,7 +26,6 @@ jobs:
         uses: astral-sh/setup-uv@v6
         with:
           version: "0.8.2"
-          enable-cache: true
 
       - name: Install the projects
         run: |
