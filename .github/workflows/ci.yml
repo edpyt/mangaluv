@@ -31,10 +31,9 @@ jobs:
         run: |
           export UV_PROJECT_ENVIRONMENT="${pythonLocation}"
           uv sync --locked --all-extras --dev
-          export UV_PYTHON="${pythonLocation}"
 
       - name: Run tests
-        run: uvx pytest
+        run: python -m pytest
 
       - name: Run basedpyright
-        run: uvx basedpyright@1.31.0
+        run: python -m basedpyright
