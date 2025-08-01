@@ -19,8 +19,6 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v6
-        env:
-          UV_PROJECT_ENVIRONMENT: /usr/local/
         with:
           version: "0.8.2"
           python-version: ${{ matrix.python-version }}
@@ -28,6 +26,8 @@ jobs:
 
       - name: Install the projects
         run: uv sync --locked --all-extras --dev
+        env:
+          UV_PROJECT_ENVIRONMENT: /usr/local/
 
       - name: Run tests
         run: uvx pytest
