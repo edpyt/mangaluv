@@ -1,6 +1,7 @@
 """Gateway config code."""
 
 from functools import lru_cache
+from typing import ClassVar
 
 from pydantic import BaseModel, Field, HttpUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -16,7 +17,9 @@ class Settings(BaseSettings):
     """API settings."""
 
     services: Services = Field(default_factory=Services)
-    model_config = SettingsConfigDict(env_nested_delimiter="__")
+    model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
+        env_nested_delimiter="__"
+    )
 
 
 @lru_cache

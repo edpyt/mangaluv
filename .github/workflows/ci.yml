@@ -1,9 +1,6 @@
 name: Continuous Integration checks
 
-on:
-  pull_request:
-  push:
-    branches: [main]
+on: [push, pull_request]
 
 jobs:
   uv-ci:
@@ -12,7 +9,7 @@ jobs:
     strategy:
       matrix:
         python-version:
-          - "3.13"
+          - "3.13.5"
     defaults:
       run:
         working-directory: apps/backend
@@ -20,18 +17,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
       - name: Install uv
         uses: astral-sh/setup-uv@v6
         with:
           version: "0.8.2"
-          python-version: ${{ matrix.python-version }}
-          enable-cache: true
 
       - name: Install the projects
-        run: uv sync --locked --all-extras --dev
+        run: |
+          export UV_PROJECT_ENVIRONMENT="${pythonLocation}"
+          uv sync --locked --group dev --group lint
 
       - name: Run tests
-        run: uvx pytest
+        run: |
+          python -m pytest services/api_gateway
+          python -m pytest services/auth_service
 
       - name: Run basedpyright
-        run: uvx basedpyright@1.31.0
+        run: python -m basedpyright

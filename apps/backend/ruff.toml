@@ -1,8 +1,9 @@
 target-version = "py313"
 line-length = 80
+extend-exclude = ["**/typings/"]
 
 [lint]
-extend-select = ["E501", "UP", "D", "I"]
+extend-select = ["E501", "UP", "D", "I", "PGH"]
 ignore = ["D203", "D212"]
 
 [lint.per-file-ignores]
