@@ -22,6 +22,8 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v6
+        env:
+          UV_PROJECT_ENVIRONMENT: /usr/local/
         with:
           version: "0.8.2"
           python-version: ${{ matrix.python-version }}
