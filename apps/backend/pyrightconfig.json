@@ -1,0 +1,12 @@
+{
+  "include": [
+    "services"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    "**/.venv"
+  ],
+  "ignore": [
+    "**/*.lock"
+  ]
+}

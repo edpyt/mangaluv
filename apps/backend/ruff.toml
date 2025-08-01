@@ -3,6 +3,7 @@ line-length = 80
 
 [lint]
 extend-select = ["E501", "UP", "D", "I"]
+ignore = ["D203", "D212"]
 
 [lint.per-file-ignores]
 "__init__.py" = ["D104"]
