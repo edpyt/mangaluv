@@ -8,4 +8,4 @@ ignore = ["D203", "D212"]
 
 [lint.per-file-ignores]
 "__init__.py" = ["D104"]
-"**/{tests}/*" = ["D"]
+"**/{tests,migrations}/*" = ["D"]

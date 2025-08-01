@@ -43,6 +43,8 @@ services:
       file: compose.override.yml
       service: auth_db
     container_name: auth_db
+    ports:
+      - 5432:5432
     profiles: [dev]
 
 volumes:

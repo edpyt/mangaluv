@@ -9,7 +9,15 @@ services:
     restart: on-failure
     ports: ["8001:80"]
     environment:
-      - JWT__secret_key=abbbb
       - JWT__expire_minutes=10
       - DB__uri=$POSTGRES_DB_URI
     env_file: ".env"
+
+  auth_service_migrations:
+    build:
+      context: ./services/auth_service/
+    restart: on-failure
+    command: ["/app/.venv/bin/alembic", "upgrade", "head"]
+    environment:
+      - AUTH_DB_MIGRATIONS_URI=$POSTGRES_DB_URI
+    profiles: [tools]
