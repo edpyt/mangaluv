@@ -12,7 +12,7 @@ from auth_service.di import setup_container
 @asynccontextmanager
 async def _lifespan(app: FastAPI) -> AsyncGenerator[None]:
     async with app.state.dishka_container() as request_container:
-        db = await request_container.get(AsyncSession)
+        db: AsyncSession = await request_container.get(AsyncSession)
         if not await check_db_health(db):
             raise RuntimeError("Cannot establish a connection to the DB")
     yield

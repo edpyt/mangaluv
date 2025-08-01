@@ -1,5 +1,7 @@
 """Authentication service config."""
 
+from typing import ClassVar
+
 from pydantic import BaseModel, Field, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -26,4 +28,6 @@ class Settings(BaseSettings):
     db: DbSettings = Field(default_factory=DbSettings)
     jwt: JwtSettings = Field(default_factory=JwtSettings)
 
-    model_config = SettingsConfigDict(env_nested_delimiter="__")
+    model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
+        env_nested_delimiter="__"
+    )

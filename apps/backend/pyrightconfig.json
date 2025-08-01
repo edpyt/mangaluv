@@ -8,5 +8,7 @@
   ],
   "ignore": [
     "**/*.lock"
-  ]
+  ],
+  "reportUnusedCallResult": false,
+  "reportAny": false
 }

@@ -1,2 +1,5 @@
 [rules]
 unresolved-import = "warn"
+
+[src]
+exclude = ["**/typings/"]
