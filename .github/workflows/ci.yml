@@ -33,7 +33,9 @@ jobs:
           uv sync --locked --all-extras --dev
 
       - name: Run tests
-        run: python -m pytest
+        run: |
+          python -m pytest services/api_gateway
+          python -m pytest services/auth_service
 
       - name: Run basedpyright
         run: python -m basedpyright
