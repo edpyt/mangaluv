@@ -20,7 +20,7 @@ async def _lifespan(app: FastAPI) -> AsyncGenerator:
 
 def setup_app() -> FastAPI:
     """Create and configure the FastAPI application instance."""
-    app = FastAPI(lifespan=_lifespan, title="Mangaluv authentication service")
+    app = FastAPI(lifespan=_lifespan, title="Mangaluv authentication service.")
     container = setup_container()
     setup_dishka(container=container, app=app)
     return app

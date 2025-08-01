@@ -3,29 +3,46 @@ services:
     build:
       context: ./services/api_gateway/
     ports: ["8000:80"]
+    profiles: [dev, prod]
 
   auth_service:
-    build:
-      context: ./services/auth_service/
-    restart: on-failure
-    ports: ["8001:80"]
-    environment:
-      - JWT__secret_key=abbbb
-      - JWT__expire_minutes=10
-      - DB__uri=$POSTGRES_DB_URI
-    env_file: ".env"
-
-  auth_db:
-    image: postgres:16.9-bookworm
-    volumes:
-      - auth_db_data:/var/lib/postgresql/data
-    env_file: ".env"
+    extends:
+      file: compose.override.yml
+      service: auth_service
     profiles: [prod]
 
+  auth_db:
+    extends:
+      file: compose.override.yml
+      service: auth_db
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
+    profiles: [prod]
+
+  auth_service_dev:
+    extends:
+      file: compose.override.yml
+      service: auth_service
+    volumes:
+      - ./services/auth_service/src:/app/src
+    command:
+      [
+        "/app/.venv/bin/uvicorn",
+        "--factory",
+        "src.auth_service:setup_app",
+        "--port",
+        "80",
+        "--host",
+        "0.0.0.0",
+        "--reload",
+      ]
+    profiles: [dev]
+
   auth_db_dev:
+    extends:
+      file: compose.override.yml
+      service: auth_db
     container_name: auth_db
-    image: postgres:16.9-bookworm
-    env_file: ".env"
     profiles: [dev]
 
 volumes:
