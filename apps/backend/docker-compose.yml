@@ -10,6 +10,8 @@ services:
       file: compose.override.yml
       service: auth_service
     profiles: [prod]
+    depends_on:
+      - auth_db
 
   auth_db:
     extends:
@@ -37,6 +39,8 @@ services:
         "--reload",
       ]
     profiles: [dev]
+    depends_on:
+      - auth_db_dev
 
   auth_db_dev:
     extends:
