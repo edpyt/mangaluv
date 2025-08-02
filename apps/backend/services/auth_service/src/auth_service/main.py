@@ -6,9 +6,9 @@ from contextlib import asynccontextmanager
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from auth_service.db.conn import check_db_health
-from auth_service.di import setup_container
+from src.auth_service.db.conn import check_db_health
+from src.auth_service.di import setup_container
+from src.auth_service.routes import auth_router
 
 
 @asynccontextmanager
@@ -20,9 +20,20 @@ async def _lifespan(app: FastAPI) -> AsyncGenerator[None]:
     yield
 
 
-def setup_app() -> FastAPI:
-    """Create and configure the FastAPI application instance."""
+def create_app() -> FastAPI:
+    """Create the FastAPI application instance."""
     app = FastAPI(lifespan=_lifespan, title="Mangaluv authentication service.")
+    _setup_app_routes(app)
+    return app
+
+
+def _setup_app_routes(app: FastAPI) -> None:
+    app.include_router(auth_router)
+
+
+def create_production_app() -> FastAPI:
+    """Configure production FastAPI application instance."""
+    app = create_app()
     container = setup_container()
     setup_dishka(container=container, app=app)
     return app

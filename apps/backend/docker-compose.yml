@@ -31,7 +31,7 @@ services:
       [
         "uvicorn",
         "--factory",
-        "src.auth_service.main:setup_app",
+        "src.auth_service.main:create_production_app",
         "--port",
         "80",
         "--host",

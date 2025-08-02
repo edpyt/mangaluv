@@ -29,7 +29,6 @@ name = "api-gateway"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "dishka" },
     { name = "fastapi", extra = ["all"] },
     { name = "pydantic-settings" },
 ]
@@ -37,21 +36,16 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "pytest" },
-    { name = "pytest-asyncio" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "dishka", specifier = ">=1.6.0" },
     { name = "fastapi", extras = ["all"], specifier = ">=0.116.1" },
     { name = "pydantic-settings", specifier = ">=2.10.1" },
 ]
 
 [package.metadata.requires-dev]
-dev = [
-    { name = "pytest", specifier = ">=8.4.1" },
-    { name = "pytest-asyncio", specifier = ">=1.1.0" },
-]
+dev = [{ name = "pytest", specifier = ">=8.4.1" }]
 
 [[package]]
 name = "certifi"
@@ -81,15 +75,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d8/53/6f443c9a4a8358a93a6792e2acffb9d9d5cb0a5cfd8802644b7b1c9a02e4/colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44", size = 27697, upload-time = "2022-10-25T02:36:22.414Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6", size = 25335, upload-time = "2022-10-25T02:36:20.889Z" },
-]
-
-[[package]]
-name = "dishka"
-version = "1.6.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/11/04/f3add05678a3ac1ab7736faae45b18b5365d84b1cd3cf3af64b09a1d6a5f/dishka-1.6.0.tar.gz", hash = "sha256:f1fa5ec7e980d4f618d0c425d1bb81d8e9414894d8ec6553b197d2298774e12f", size = 65971, upload-time = "2025-05-18T21:40:53.259Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/76/6b/f9cd08543c4f55bf129a0ebce5c09e43528235dd6e7cb906761ca094979a/dishka-1.6.0-py3-none-any.whl", hash = "sha256:ab1aedee152ce7bb11cfd2673d7ce4001fe2b330d14e84535d7525a68430b2c2", size = 90789, upload-time = "2025-05-18T21:40:51.352Z" },
 ]
 
 [[package]]
@@ -461,18 +446,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/08/ba/45911d754e8eba3d5a841a5ce61a65a685ff1798421ac054f85aa8747dfb/pytest-8.4.1.tar.gz", hash = "sha256:7c67fd69174877359ed9371ec3af8a3d2b04741818c51e5e99cc1742251fa93c", size = 1517714, upload-time = "2025-06-18T05:48:06.109Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/29/16/c8a903f4c4dffe7a12843191437d7cd8e32751d5de349d45d3fe69544e87/pytest-8.4.1-py3-none-any.whl", hash = "sha256:539c70ba6fcead8e78eebbf1115e8b589e7565830d7d006a8723f19ac8a0afb7", size = 365474, upload-time = "2025-06-18T05:48:03.955Z" },
-]
-
-[[package]]
-name = "pytest-asyncio"
-version = "1.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pytest" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/4e/51/f8794af39eeb870e87a8c8068642fc07bce0c854d6865d7dd0f2a9d338c2/pytest_asyncio-1.1.0.tar.gz", hash = "sha256:796aa822981e01b68c12e4827b8697108f7205020f24b5793b3c41555dab68ea", size = 46652, upload-time = "2025-07-16T04:29:26.393Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c7/9d/bf86eddabf8c6c9cb1ea9a869d6873b46f105a5d292d3a6f7071f5b07935/pytest_asyncio-1.1.0-py3-none-any.whl", hash = "sha256:5fe2d69607b0bd75c656d1211f969cadba035030156745ee09e7d71740e58ecf", size = 15157, upload-time = "2025-07-16T04:29:24.929Z" },
 ]
 
 [[package]]

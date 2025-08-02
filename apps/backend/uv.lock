@@ -59,7 +59,6 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "pytest" },
-    { name = "pytest-asyncio" },
 ]
 
 [package.metadata]
@@ -69,10 +68,7 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [
-    { name = "pytest", specifier = ">=8.4.1" },
-    { name = "pytest-asyncio", specifier = ">=1.1.0" },
-]
+dev = [{ name = "pytest", specifier = ">=8.4.1" }]
 
 [[package]]
 name = "asyncpg"
@@ -95,10 +91,9 @@ name = "auth-service"
 version = "0.1.0"
 source = { editable = "services/auth_service" }
 dependencies = [
-    { name = "alembic" },
     { name = "asyncpg" },
     { name = "dishka" },
-    { name = "fastapi", extra = ["all"] },
+    { name = "fastapi", extra = ["standard"] },
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "sqlalchemy", extra = ["asyncio"] },
@@ -110,13 +105,17 @@ dev = [
     { name = "pytest-asyncio" },
     { name = "testcontainers" },
 ]
+migrations = [
+    { name = "alembic" },
+    { name = "asyncpg" },
+    { name = "pydantic-settings" },
+]
 
 [package.metadata]
 requires-dist = [
-    { name = "alembic", specifier = ">=1.16.4" },
     { name = "asyncpg", specifier = ">=0.30.0" },
     { name = "dishka", specifier = ">=1.6.0" },
-    { name = "fastapi", extras = ["all"], specifier = ">=0.116.1" },
+    { name = "fastapi", extras = ["standard"], specifier = ">=0.116.1" },
     { name = "pydantic", specifier = ">=2.11.7" },
     { name = "pydantic-settings", specifier = ">=2.10.1" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0.41" },
@@ -127,6 +126,11 @@ dev = [
     { name = "pytest", specifier = ">=8.4.1" },
     { name = "pytest-asyncio", specifier = ">=1.1.0" },
     { name = "testcontainers", specifier = ">=4.12.0" },
+]
+migrations = [
+    { name = "alembic", specifier = ">=1.16.4" },
+    { name = "asyncpg", specifier = ">=0.30.0" },
+    { name = "pydantic-settings", specifier = ">=2.10.1" },
 ]
 
 [[package]]
@@ -265,6 +269,14 @@ all = [
     { name = "python-multipart" },
     { name = "pyyaml" },
     { name = "ujson" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+standard = [
+    { name = "email-validator" },
+    { name = "fastapi-cli", extra = ["standard"] },
+    { name = "httpx" },
+    { name = "jinja2" },
+    { name = "python-multipart" },
     { name = "uvicorn", extra = ["standard"] },
 ]
 
