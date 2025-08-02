@@ -2,6 +2,8 @@ from collections.abc import AsyncGenerator, Generator
 
 import pytest
 import pytest_asyncio
+from auth_service.db.models import Base
+from auth_service.main import create_app
 from dishka import (
     AsyncContainer,
     FromDishka,
@@ -19,8 +21,6 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-from src.auth_service.db.models import Base
-from src.auth_service.main import create_app
 from testcontainers.postgres import PostgresContainer
 
 
@@ -33,8 +33,8 @@ def db() -> Generator[PostgresContainer]:
 class TestDbProvider(Provider):
     db_uri: str
 
-    def __init__(self, /, db_uri: str, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, /, db_uri: str):
+        super().__init__()
         self.db_uri = db_uri
 
     @provide(scope=Scope.APP)

@@ -8,7 +8,7 @@ from dishka import (
     Provider,
     Scope,
     make_async_container,
-    provide,  # pyright: ignore[reportUnknownVariableType]
+    provide,
 )
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
