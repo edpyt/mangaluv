@@ -6,11 +6,10 @@ lint = ["basedpyright==1.31.0"]
 
 [tool.basedpyright]
 include = ["services"]
-exclude = ["**/__pycache__", "**/.venv", "**/migrations", "**/tests/"]
+exclude = ["**/__pycache__", "**/.venv", "**/migrations", "**/tests"]
 ignore = ["**/*.lock"]
 reportUnusedCallResult = false
 reportAny = false
-reportMissingImports = false
 
 [tool.ruff]
 target-version = "py313"
@@ -18,7 +17,7 @@ line-length = 80
 extend-exclude = ["**/typings/"]
 
 [tool.ruff.lint]
-extend-select = ["E501", "UP", "D", "I", "PGH"]
+extend-select = ["E501", "UP", "D", "I", "PGH", "RUF", "T20"]
 ignore = ["D203", "D212"]
 
 [tool.ruff.lint.per-file-ignores]

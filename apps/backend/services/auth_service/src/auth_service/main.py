@@ -6,9 +6,10 @@ from contextlib import asynccontextmanager
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.auth_service.db.conn import check_db_health
-from src.auth_service.di import setup_container
-from src.auth_service.routes import auth_router
+
+from auth_service.db.conn import check_db_health
+from auth_service.di import setup_container
+from auth_service.routes import auth_router
 
 
 @asynccontextmanager
