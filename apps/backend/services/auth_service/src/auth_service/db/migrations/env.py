@@ -1,12 +1,14 @@
 import asyncio
-import os
 from logging.config import fileConfig
 
 from alembic import context
-from auth_service.db.models import Base
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
+from src.auth_service.config import Settings
+from src.auth_service.db.models import Base
+
+db_settings = Settings().db
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -26,7 +28,7 @@ target_metadata = Base.metadata
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
-# ... etc.
+config.set_main_option("sqlalchemy.url", str(db_settings.uri))
 
 
 def run_migrations_offline() -> None:
@@ -41,9 +43,7 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url") or os.environ.get(
-        "AUTH_DB_MIGRATIONS_URI"
-    )
+    url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -75,7 +75,6 @@ async def run_async_migrations() -> None:
         ),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
-        url=os.environ.get("AUTH_DB_MIGRATIONS_URI"),
     )
 
     async with connectable.connect() as connection:

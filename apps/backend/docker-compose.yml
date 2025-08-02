@@ -27,9 +27,9 @@ services:
       - ./services/auth_service/src:/app/src
     command:
       [
-        "/app/.venv/bin/uvicorn",
+        "uvicorn",
         "--factory",
-        "src.auth_service:setup_app",
+        "src.auth_service.main:setup_app",
         "--port",
         "80",
         "--host",

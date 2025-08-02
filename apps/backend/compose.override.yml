@@ -6,6 +6,7 @@ services:
   auth_service:
     build:
       context: ./services/auth_service/
+      target: run
     restart: on-failure
     ports: ["8001:80"]
     environment:
@@ -16,8 +17,8 @@ services:
   auth_service_migrations:
     build:
       context: ./services/auth_service/
+      target: migrations
     restart: on-failure
-    command: ["/app/.venv/bin/alembic", "upgrade", "head"]
     environment:
-      - AUTH_DB_MIGRATIONS_URI=$POSTGRES_DB_URI
+      - DB__uri=$POSTGRES_DB_URI
     profiles: [tools]
