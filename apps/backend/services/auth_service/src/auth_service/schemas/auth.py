@@ -1,8 +1,14 @@
 """Authentication API schemas."""
 
-from typing import Self
+from typing import ClassVar, Self
 
-from pydantic import BaseModel, EmailStr, model_validator
+from pydantic import (
+    UUID4,
+    BaseModel,
+    ConfigDict,
+    EmailStr,
+    model_validator,
+)
 
 
 class UserBase(BaseModel):
@@ -10,6 +16,14 @@ class UserBase(BaseModel):
 
     email: EmailStr
     full_name: str
+
+
+class User(UserBase):
+    """User from orm model."""
+
+    id: UUID4
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)
 
 
 class UserRegister(UserBase):

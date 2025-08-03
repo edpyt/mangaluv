@@ -17,7 +17,9 @@ class User(Base):
     __tablename__: str = "users"
 
     id: Mapped[UUID] = mapped_column(
-        primary_key=True, index=True, default=uuid4
+        primary_key=True,
+        index=True,
+        default=uuid4,
     )
     email: Mapped[str] = mapped_column(unique=True, index=True)
     full_name: Mapped[str] = mapped_column()
@@ -27,3 +29,6 @@ class User(Base):
         server_onupdate=func.now(),
         onupdate=func.now(),
     )
+    is_active: Mapped[bool] = mapped_column(default=False)
+
+    password: Mapped[str] = mapped_column()

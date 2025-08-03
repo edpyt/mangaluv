@@ -1,7 +1,9 @@
-from fastapi.testclient import TestClient
+import pytest
+from httpx import AsyncClient
 
 
-def test_register_user(client: TestClient):
+@pytest.mark.asyncio
+async def test_register_user(client: AsyncClient):
     data = {
         "email": "test_user@mail.com",
         "full_name": "Test User",
@@ -9,7 +11,7 @@ def test_register_user(client: TestClient):
         "password_confirm": "321",  # NOTE: different passwords
     }
 
-    response = client.post("/register", json=data)
+    response = await client.post("/register", json=data)
 
     assert response.status_code == 422
     assert (
@@ -19,6 +21,16 @@ def test_register_user(client: TestClient):
 
     data["password_confirm"] = data["password"]
 
-    response = client.post("/register", json=data)
+    response = await client.post("/register", json=data)
 
     assert response.status_code == 201
+
+    response_json = response.json()
+
+    assert response_json["email"] == data["email"]
+    assert response_json["full_name"] == data["full_name"]
+
+    response = await client.post("/register", json=data)
+
+    assert response.status_code == 400
+    assert response.json() == {"detail": "Email has already registred"}

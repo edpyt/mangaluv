@@ -1,8 +1,9 @@
-from collections.abc import AsyncGenerator, Generator
+from collections.abc import AsyncGenerator
 
 import pytest
 import pytest_asyncio
 from auth_service.db.models import Base
+from auth_service.di import RepositoriesProvider
 from auth_service.main import create_app
 from dishka import (
     AsyncContainer,
@@ -14,7 +15,7 @@ from dishka import (
 )
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
-from fastapi.testclient import TestClient
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -24,8 +25,8 @@ from sqlalchemy.ext.asyncio import (
 from testcontainers.postgres import PostgresContainer
 
 
-@pytest.fixture(scope="session")
-def db() -> Generator[PostgresContainer]:
+@pytest_asyncio.fixture(scope="session")
+async def db() -> AsyncGenerator[PostgresContainer]:
     with PostgresContainer("postgres:16.9-bookworm") as postgres:
         yield postgres
 
@@ -64,25 +65,28 @@ class TestDbProvider(Provider):
             await conn.rollback()
 
 
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture(scope="session")
 async def container(db: PostgresContainer) -> AsyncGenerator[AsyncContainer]:
-    db_uri = db.get_connection_url().replace(
-        "postgresql+psycopg2",
-        "postgresql+asyncpg",
+    db.driver = "+asyncpg"  # pyright: ignore[reportAttributeAccessIssue]
+    db_uri = db.get_connection_url()
+    container = make_async_container(
+        TestDbProvider(db_uri),
+        RepositoriesProvider(),
     )
-    container = make_async_container(TestDbProvider(db_uri))
     yield container
     await container.close()
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def app(container: AsyncContainer) -> FastAPI:
     app = create_app()
     setup_dishka(container, app)
     return app
 
 
-@pytest.fixture
-def client(app: FastAPI) -> Generator[TestClient]:
-    with TestClient(app) as client:
-        yield client
+@pytest_asyncio.fixture
+async def client(app: FastAPI) -> AsyncGenerator[AsyncClient]:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as ac:
+        yield ac

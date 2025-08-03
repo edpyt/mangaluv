@@ -18,6 +18,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from auth_service.config import Settings
+from auth_service.db.repositories.user import UserRepository
 
 
 class ConfigProvider(Provider):
@@ -56,6 +57,20 @@ class DbProvider(Provider):
             yield session
 
 
+class RepositoriesProvider(Provider):
+    """Repositories dependencies provider."""
+
+    @provide(scope=Scope.REQUEST)
+    async def _user_repository(
+        self, session: FromDishka[AsyncSession]
+    ) -> UserRepository:
+        return UserRepository(session)
+
+
 def setup_container() -> AsyncContainer:
     """Return Dishka container."""
-    return make_async_container(ConfigProvider(), DbProvider())
+    return make_async_container(
+        ConfigProvider(),
+        DbProvider(),
+        RepositoriesProvider(),
+    )

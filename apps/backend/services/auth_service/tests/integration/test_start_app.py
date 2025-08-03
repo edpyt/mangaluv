@@ -1,6 +1,7 @@
 import pytest
 from auth_service.main import create_production_app
 from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 
 def test_start_without_db():
@@ -13,5 +14,6 @@ def test_start_without_db():
             client.get("/")
 
 
-def test_start_with_db(client: TestClient):
-    client.get("/")  # Should not raise error
+@pytest.mark.asyncio
+async def test_start_with_db(client: AsyncClient):
+    await client.get("/")  # Should not raise error
