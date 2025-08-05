@@ -21,8 +21,7 @@ async def register(
     repository: FromDishka[UserRepository],
 ) -> auth_schemas.User:
     """Register user endpoint."""
-    user = await repository.find_by_email(data.email)
-    if user:
+    if await repository.find_by_email(data.email):
         raise HTTPException(
             status_code=400,
             detail="Email has already registred",
