@@ -19,7 +19,8 @@ class JwtSettings(BaseModel):
 
     secret_key: str = "your-secret-key"
     algorithm: str = "HS256"
-    expire_minutes: int = 30
+    access_expire_minutes: int = 30
+    refresh_expire_minutes: int = 30
 
 
 class Settings(BaseSettings):

@@ -18,4 +18,4 @@ class UserRepository(SQLARepository):
         """
         stmt = select(User).where(User.email == email)
         result = await self.session.execute(stmt)
-        return result.scalars().first()
+        return result.scalar_one_or_none()

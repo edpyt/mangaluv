@@ -1,9 +1,8 @@
 from collections.abc import AsyncGenerator
 
 import pytest
-import pytest_asyncio
 from auth_service.db.models import Base
-from auth_service.di import RepositoriesProvider
+from auth_service.di import ConfigProvider, RepositoriesProvider
 from auth_service.main import create_app
 from dishka import (
     AsyncContainer,
@@ -25,7 +24,7 @@ from sqlalchemy.ext.asyncio import (
 from testcontainers.postgres import PostgresContainer
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest.fixture(scope="session")
 async def db() -> AsyncGenerator[PostgresContainer]:
     with PostgresContainer("postgres:16.9-bookworm") as postgres:
         yield postgres
@@ -51,7 +50,7 @@ class TestDbProvider(Provider):
     def _sqla_async_sessionmaker(
         self, engine: FromDishka[AsyncEngine]
     ) -> async_sessionmaker[AsyncSession]:
-        return async_sessionmaker(engine)
+        return async_sessionmaker(engine, expire_on_commit=False)
 
     @provide(scope=Scope.REQUEST)
     async def _sqla_async_session(
@@ -65,11 +64,12 @@ class TestDbProvider(Provider):
             await conn.rollback()
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest.fixture(scope="session")
 async def container(db: PostgresContainer) -> AsyncGenerator[AsyncContainer]:
     db.driver = "+asyncpg"  # pyright: ignore[reportAttributeAccessIssue]
     db_uri = db.get_connection_url()
     container = make_async_container(
+        ConfigProvider(),  # TODO: not sure about this
         TestDbProvider(db_uri),
         RepositoriesProvider(),
     )
@@ -84,9 +84,10 @@ def app(container: AsyncContainer) -> FastAPI:
     return app
 
 
-@pytest_asyncio.fixture
+@pytest.fixture
 async def client(app: FastAPI) -> AsyncGenerator[AsyncClient]:
     async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
+        transport=ASGITransport(app=app),
+        base_url="http://test",
     ) as ac:
         yield ac
