@@ -19,6 +19,7 @@ async def _lifespan(app: FastAPI) -> AsyncGenerator[None]:
         if not await check_db_health(db):
             raise RuntimeError("Cannot establish a connection to the DB")
     yield
+    await app.state.dishka_container.close()
 
 
 def create_app() -> FastAPI:

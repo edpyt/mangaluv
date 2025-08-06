@@ -37,3 +37,16 @@ class UserRegister(UserBase):
         if self.password != self.password_confirm:
             raise ValueError("Passwords do not match")
         return self
+
+
+class UserLogin(BaseModel):
+    """User login model."""
+
+    email: EmailStr
+    password: str
+
+
+class UserLoginResponse(BaseModel):
+    """Login user response."""
+
+    token: str

@@ -1,9 +1,8 @@
 from collections.abc import AsyncGenerator
 
-import pytest
 import pytest_asyncio
 from auth_service.db.models import Base
-from auth_service.di import RepositoriesProvider
+from auth_service.di import ConfigProvider, RepositoriesProvider
 from auth_service.main import create_app
 from dishka import (
     AsyncContainer,
@@ -31,6 +30,35 @@ async def db() -> AsyncGenerator[PostgresContainer]:
         yield postgres
 
 
+@pytest_asyncio.fixture(loop_scope="session")
+async def container(db: PostgresContainer) -> AsyncGenerator[AsyncContainer]:
+    db.driver = "+asyncpg"  # pyright: ignore[reportAttributeAccessIssue]
+    db_uri = db.get_connection_url()
+    container = make_async_container(
+        ConfigProvider(),  # FIXME: not sure about this
+        TestDbProvider(db_uri),
+        RepositoriesProvider(),
+    )
+    yield container
+    await container.close()
+
+
+@pytest_asyncio.fixture(loop_scope="session")
+async def app(container: AsyncContainer) -> FastAPI:
+    app = create_app()
+    setup_dishka(container, app)
+    return app
+
+
+@pytest_asyncio.fixture
+async def client(app: FastAPI) -> AsyncGenerator[AsyncClient]:
+    async with AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url="http://test",
+    ) as ac:
+        yield ac
+
+
 class TestDbProvider(Provider):
     db_uri: str
 
@@ -51,7 +79,7 @@ class TestDbProvider(Provider):
     def _sqla_async_sessionmaker(
         self, engine: FromDishka[AsyncEngine]
     ) -> async_sessionmaker[AsyncSession]:
-        return async_sessionmaker(engine)
+        return async_sessionmaker(engine, expire_on_commit=False)
 
     @provide(scope=Scope.REQUEST)
     async def _sqla_async_session(
@@ -63,30 +91,3 @@ class TestDbProvider(Provider):
             async with async_session() as session:
                 yield session
             await conn.rollback()
-
-
-@pytest_asyncio.fixture(scope="session")
-async def container(db: PostgresContainer) -> AsyncGenerator[AsyncContainer]:
-    db.driver = "+asyncpg"  # pyright: ignore[reportAttributeAccessIssue]
-    db_uri = db.get_connection_url()
-    container = make_async_container(
-        TestDbProvider(db_uri),
-        RepositoriesProvider(),
-    )
-    yield container
-    await container.close()
-
-
-@pytest.fixture(scope="session")
-def app(container: AsyncContainer) -> FastAPI:
-    app = create_app()
-    setup_dishka(container, app)
-    return app
-
-
-@pytest_asyncio.fixture
-async def client(app: FastAPI) -> AsyncGenerator[AsyncClient]:
-    async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
-    ) as ac:
-        yield ac
