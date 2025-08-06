@@ -7,4 +7,5 @@
        C --> E[(PostgreSQL)]
        B -->|/manga/*| D[Manga Service: Robyn]
        D --> G[(PostgreSQL)]
+       D --> H[(MinIO)] 
    #+end_src
