@@ -30,6 +30,35 @@ async def db() -> AsyncGenerator[PostgresContainer]:
         yield postgres
 
 
+@pytest_asyncio.fixture(loop_scope="session")
+async def container(db: PostgresContainer) -> AsyncGenerator[AsyncContainer]:
+    db.driver = "+asyncpg"  # pyright: ignore[reportAttributeAccessIssue]
+    db_uri = db.get_connection_url()
+    container = make_async_container(
+        ConfigProvider(),  # FIXME: not sure about this
+        TestDbProvider(db_uri),
+        RepositoriesProvider(),
+    )
+    yield container
+    await container.close()
+
+
+@pytest_asyncio.fixture(loop_scope="session")
+async def app(container: AsyncContainer) -> FastAPI:
+    app = create_app()
+    setup_dishka(container, app)
+    return app
+
+
+@pytest_asyncio.fixture
+async def client(app: FastAPI) -> AsyncGenerator[AsyncClient]:
+    async with AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url="http://test",
+    ) as ac:
+        yield ac
+
+
 class TestDbProvider(Provider):
     db_uri: str
 
@@ -62,32 +91,3 @@ class TestDbProvider(Provider):
             async with async_session() as session:
                 yield session
             await conn.rollback()
-
-
-@pytest_asyncio.fixture(loop_scope="session")
-async def container(db: PostgresContainer) -> AsyncGenerator[AsyncContainer]:
-    db.driver = "+asyncpg"  # pyright: ignore[reportAttributeAccessIssue]
-    db_uri = db.get_connection_url()
-    container = make_async_container(
-        ConfigProvider(),  # TODO: not sure about this
-        TestDbProvider(db_uri),
-        RepositoriesProvider(),
-    )
-    yield container
-    await container.close()
-
-
-@pytest_asyncio.fixture(loop_scope="session")
-async def app(container: AsyncContainer) -> FastAPI:
-    app = create_app()
-    setup_dishka(container, app)
-    return app
-
-
-@pytest_asyncio.fixture
-async def client(app: FastAPI) -> AsyncGenerator[AsyncClient]:
-    async with AsyncClient(
-        transport=ASGITransport(app=app),
-        base_url="http://test",
-    ) as ac:
-        yield ac
