@@ -1,5 +1,6 @@
 from secrets import token_urlsafe
 
+import pytest
 from auth_service.db.repositories.user import UserRepository
 from dishka import AsyncContainer
 from httpx import AsyncClient
@@ -15,33 +16,39 @@ async def test_bad_login_user(client: AsyncClient):
     assert response.json() == {"detail": "Incorrect email or password"}
 
 
-async def test_login_user(client: AsyncClient, container: AsyncContainer):
-    password = token_urlsafe()
+@pytest.mark.parametrize(
+    "create_user_data",
+    [
+        {
+            "email": "test@mail.com",
+            "full_name": "test",
+            "password": "test",
+        },
+        {
+            "email": f"{token_urlsafe()}@mail.com",
+            "full_name": token_urlsafe(),
+            "password": token_urlsafe(),
+        },
+    ],
+)
+async def test_login_user(
+    client: AsyncClient,
+    container: AsyncContainer,
+    create_user_data: dict[str, str],
+):
+    create_user_data["password_confirm"] = create_user_data["password"]
     created_user = (
         # NOTE: need to refactor maybe
-        await client.post(
-            "/register",
-            json={
-                "email": f"{token_urlsafe()}@mail.com",
-                "full_name": token_urlsafe(),
-                "password": password,
-                "password_confirm": password,
-            },
-        )
+        await client.post("/register", json=create_user_data)
     ).json()
     async with container() as request_container:
         repository = await request_container.get(UserRepository)
-        user = await repository.find_by_email(created_user["email"])
+        if not (user := await repository.find_by_email(created_user["email"])):
+            raise
         user.is_active = True
         await repository.save(user)
 
-    response = await client.post(
-        "/login",
-        json={
-            "email": user.email,
-            "password": password,
-        },
-    )
+    response = await client.post("/login", json=create_user_data)
 
     assert response.status_code == 200
     assert response.cookies.get("refresh")

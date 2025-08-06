@@ -29,7 +29,7 @@ class _JwtPayload(TypedDict):
     sub: str
     jti: str
     iat: datetime
-    exp: str | None
+    exp: datetime | None
 
 
 def create_token_pair(
