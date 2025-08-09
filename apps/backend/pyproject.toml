@@ -1,5 +1,5 @@
 [tool.uv.workspace]
-members = ["./services/api_gateway/", "./services/auth_service/"]
+members = ["services/*"]
 
 [dependency-groups]
 lint = ["basedpyright==1.31.0"]
