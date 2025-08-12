@@ -2,11 +2,11 @@ import asyncio
 from logging.config import fileConfig
 
 from alembic import context
+from auth_service.config import Settings
+from auth_service.db.models import Base
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-from src.auth_service.config import Settings
-from src.auth_service.db.models import Base
 
 db_settings = Settings().db
 

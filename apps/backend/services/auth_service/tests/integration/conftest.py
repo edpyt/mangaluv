@@ -1,7 +1,9 @@
 from collections.abc import AsyncGenerator
+from secrets import token_urlsafe
 
 import pytest_asyncio
 from auth_service.db.models import Base
+from auth_service.db.repositories.user import UserRepository
 from auth_service.di import ConfigProvider, RepositoriesProvider
 from auth_service.main import create_app
 from dishka import (
@@ -22,6 +24,8 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from testcontainers.postgres import PostgresContainer
+
+from .types.user import CreateUserData
 
 
 @pytest_asyncio.fixture(scope="session")
@@ -91,3 +95,30 @@ class TestDbProvider(Provider):
             async with async_session() as session:
                 yield session
             await conn.rollback()
+
+
+@pytest_asyncio.fixture
+async def create_user(
+    client: AsyncClient,
+    container: AsyncContainer,
+) -> "CreateUserData":
+    create_user_data: CreateUserData = {
+        "email": f"{token_urlsafe()}@mail.com",
+        "full_name": token_urlsafe(),
+        "password": token_urlsafe(),
+        "password_confirm": "",
+    }
+    create_user_data["password_confirm"] = create_user_data["password"]
+
+    created_user = (
+        # NOTE: need to refactor (maybe)
+        await client.post("/register", json=create_user_data)
+    ).json()
+
+    async with container() as request_container:
+        repository = await request_container.get(UserRepository)
+        if not (user := await repository.find_by_email(created_user["email"])):
+            raise
+        user.is_active = True
+        await repository.save(user)
+    return create_user_data

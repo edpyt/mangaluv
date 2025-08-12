@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth_service.db.conn import check_db_health
 from auth_service.di import setup_container
-from auth_service.routes import auth_router
+from auth_service.routes import auth_router, users_router
 
 
 @asynccontextmanager
@@ -31,6 +31,7 @@ def create_app() -> FastAPI:
 
 def _setup_app_routes(app: FastAPI) -> None:
     app.include_router(auth_router)
+    app.include_router(users_router)
 
 
 def create_production_app() -> FastAPI:
