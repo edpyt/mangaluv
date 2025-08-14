@@ -5,7 +5,7 @@ from datetime import UTC, datetime, timedelta
 from typing import TypedDict
 from uuid import UUID, uuid4
 
-from jose import jwt
+import jwt
 
 
 @dataclass(frozen=True)
@@ -49,13 +49,13 @@ def create_token_pair(
     }
     return TokenPair(
         access=_create_access_token(
-            payload.copy(),
+            payload,
             access_expire_minutes,
             secret_key,
             algorithm,
         ),
         refresh=_create_refresh_token(
-            payload.copy(),
+            payload,
             refresh_expire_minutes,
             secret_key,
             algorithm,
@@ -70,8 +70,9 @@ def _create_access_token(
     secret_key: str,
     algorithm: str,
 ) -> JwtToken:
+    payload = payload.copy()
     expire = datetime.now(UTC) + timedelta(minutes=access_expire_minutes)
-    payload["exp"] = expire
+    payload.update({"exp": expire})
     return JwtToken(
         token=jwt.encode(
             payload,  # pyright: ignore[reportArgumentType]

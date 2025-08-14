@@ -12,5 +12,5 @@ repos:
         language: python
         entry: ty check
         pass_filenames: false
-        args: [--config-file=./apps/backend/ty.toml]
+        args: [--project=./apps/backend]
         additional_dependencies: [ty]

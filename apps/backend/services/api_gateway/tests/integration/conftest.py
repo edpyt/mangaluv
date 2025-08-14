@@ -1,6 +1,6 @@
 import pytest
+from api_gateway import app
 from fastapi.testclient import TestClient
-from src.api_gateway import app
 
 
 @pytest.fixture

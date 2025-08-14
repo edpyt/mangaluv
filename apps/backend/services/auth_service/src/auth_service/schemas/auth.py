@@ -16,6 +16,7 @@ class UserBase(BaseModel):
 
     email: EmailStr
     full_name: str
+    is_active: bool
 
 
 class User(UserBase):
@@ -49,4 +50,4 @@ class UserLogin(BaseModel):
 class UserLoginResponse(BaseModel):
     """Login user response."""
 
-    token: str
+    access_token: str
