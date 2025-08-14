@@ -102,6 +102,7 @@ async def create_user(
     client: AsyncClient,
     container: AsyncContainer,
 ) -> "CreateUserData":
+    # FIXME: refactor function
     create_user_data: CreateUserData = {
         "email": f"{token_urlsafe()}@mail.com",
         "full_name": token_urlsafe(),
@@ -111,7 +112,6 @@ async def create_user(
     create_user_data["password_confirm"] = create_user_data["password"]
 
     created_user = (
-        # NOTE: need to refactor (maybe)
         await client.post("/register", json=create_user_data)
     ).json()
 

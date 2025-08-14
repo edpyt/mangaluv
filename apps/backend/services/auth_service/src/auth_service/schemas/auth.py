@@ -16,6 +16,7 @@ class UserBase(BaseModel):
 
     email: EmailStr
     full_name: str
+    is_active: bool
 
 
 class User(UserBase):
