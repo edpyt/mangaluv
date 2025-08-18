@@ -2,8 +2,9 @@ from collections.abc import AsyncGenerator
 from secrets import token_urlsafe
 
 import pytest_asyncio
+from alembic.command import upgrade
+from alembic.config import Config
 from auth_service.config import DbSettings, JwtSettings, Settings
-from auth_service.db.models import Base
 from auth_service.db.repositories.user import UserRepository
 from auth_service.di import RepositoriesProvider
 from auth_service.main import create_app
@@ -87,14 +88,23 @@ class TestDbProvider(Provider):
         self.db_uri = db_uri
 
     @provide(scope=Scope.APP)
-    async def _sqla_async_engine(self) -> AsyncGenerator[AsyncEngine]:
+    async def _alembic_config(self) -> Config:
+        config = Config()
+        config.set_main_option(
+            "script_location", "src/auth_service/db/migrations"
+        )
+        config.set_main_option("sqlalchemy.url", self.db_uri)
+        return config
+
+    @provide(scope=Scope.APP)
+    async def _sqla_async_engine(
+        self, alembic_config: FromDishka[Config]
+    ) -> AsyncGenerator[AsyncEngine]:
         engine = create_async_engine(self.db_uri)
         # FIXME: use alembic migrations
         async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
+            await conn.run_sync(lambda _: upgrade(alembic_config, "head"))
         yield engine
-        # async with engine.begin() as conn:
-        #     await conn.run_sync(Base.metadata.drop_all)
 
     @provide(scope=Scope.APP)
     def _sqla_async_sessionmaker(

@@ -7,8 +7,8 @@ from auth_service.db.models import Base
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-
-db_settings = Settings().db
+from sqlalchemy.util import await_only
+from sqlalchemy.util.concurrency import in_greenlet
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -28,7 +28,11 @@ target_metadata = Base.metadata
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
-config.set_main_option("sqlalchemy.url", str(db_settings.uri))
+if not config.get_main_option("sqlalchemy.url"):
+    from src.auth_service.config import Settings
+
+    db_settings = Settings().db
+    config.set_main_option("sqlalchemy.url", str(db_settings.uri))
 
 
 def run_migrations_offline() -> None:
@@ -86,7 +90,10 @@ async def run_async_migrations() -> None:
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
 
-    asyncio.run(run_async_migrations())
+    if in_greenlet():
+        await_only(run_async_migrations())
+    else:
+        asyncio.run(run_async_migrations())
 
 
 if context.is_offline_mode():
