@@ -73,6 +73,7 @@ class TestDbProvider(Provider):
     @provide(scope=Scope.APP)
     async def _sqla_async_engine(self) -> AsyncGenerator[AsyncEngine]:
         engine = create_async_engine(self.db_uri)
+        # FIXME: use alembic migrations
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
         yield engine
@@ -111,14 +112,14 @@ async def create_user(
     }
     create_user_data["password_confirm"] = create_user_data["password"]
 
-    created_user = (
-        await client.post("/register", json=create_user_data)
-    ).json()
+    await client.post("/register", json=create_user_data)
 
     async with container() as request_container:
         repository = await request_container.get(UserRepository)
-        if not (user := await repository.find_by_email(created_user["email"])):
-            raise
+        if not (
+            user := await repository.find_by_email(create_user_data["email"])
+        ):
+            raise ValueError("User was not created!")
         user.is_active = True
         await repository.save(user)
     return create_user_data

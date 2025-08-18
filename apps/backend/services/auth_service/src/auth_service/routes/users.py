@@ -33,8 +33,7 @@ async def _get_current_user(
             config.jwt.secret_key,
             algorithms=[config.jwt.algorithm],
         )
-        email = payload.get("sub")
-        if email is None:
+        if not (email := payload.get("sub")):
             raise credentials_error
     except InvalidTokenError as e:
         raise credentials_error from e

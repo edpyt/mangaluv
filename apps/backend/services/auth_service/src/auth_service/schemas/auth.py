@@ -16,13 +16,13 @@ class UserBase(BaseModel):
 
     email: EmailStr
     full_name: str
-    is_active: bool
 
 
 class User(UserBase):
     """User from orm model."""
 
     id: UUID4
+    is_active: bool
 
     model_config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)
 
