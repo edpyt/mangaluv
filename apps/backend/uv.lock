@@ -104,7 +104,9 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "migrations" },
+    { name = "alembic" },
+    { name = "asyncpg" },
+    { name = "pydantic-settings" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "testcontainers" },
@@ -130,7 +132,9 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "migrations" },
+    { name = "alembic", specifier = ">=1.16.4" },
+    { name = "asyncpg", specifier = ">=0.30.0" },
+    { name = "pydantic-settings", specifier = ">=2.10.1" },
     { name = "pytest", specifier = ">=8.4.1" },
     { name = "pytest-asyncio", specifier = ">=1.1.0" },
     { name = "testcontainers", specifier = ">=4.12.0" },
@@ -562,15 +566,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec958cb99bd3efefba235e65cdeb9c84d24a8293ba1d90/mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba", size = 8729, upload-time = "2022-08-14T12:40:10.846Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979, upload-time = "2022-08-14T12:40:09.779Z" },
-]
-
-[[package]]
-name = "migrations"
-version = "0.1.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/1a/20/50022571c949dee64a8d0d2ef0e8d15c358cc9da6261d9819f07f16a726a/migrations-0.1.1.tar.gz", hash = "sha256:f4ed223ffa2f6ed8df50b5058c49506ef34db30c81b2574be1d22b38a7f8c8ea", size = 6163, upload-time = "2016-11-01T12:24:29.138Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c2/8d/e165b6386736a1765f1a524e85a04d6b4f5edcee318f684f9aaaecf3060a/migrations-0.1.1-py3-none-any.whl", hash = "sha256:bc416fb8c608891ff2d9a48b221f542eb01d26469225aba86bf0641d331d4143", size = 9253, upload-time = "2016-11-01T12:24:26.859Z" },
 ]
 
 [[package]]
