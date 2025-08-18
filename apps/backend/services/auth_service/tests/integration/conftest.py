@@ -1,4 +1,5 @@
 from collections.abc import AsyncGenerator
+from pathlib import Path
 from secrets import token_urlsafe
 
 import pytest_asyncio
@@ -91,7 +92,11 @@ class TestDbProvider(Provider):
     async def _alembic_config(self) -> Config:
         config = Config()
         config.set_main_option(
-            "script_location", "src/auth_service/db/migrations"
+            "script_location",
+            str(
+                Path(__file__).parent.parent.parent  # FIXME:
+                / "src/auth_service/db/migrations"
+            ),
         )
         config.set_main_option("sqlalchemy.url", self.db_uri)
         return config
