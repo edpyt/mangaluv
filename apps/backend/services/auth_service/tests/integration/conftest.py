@@ -2,9 +2,10 @@ from collections.abc import AsyncGenerator
 from secrets import token_urlsafe
 
 import pytest_asyncio
+from auth_service.config import DbSettings, JwtSettings, Settings
 from auth_service.db.models import Base
 from auth_service.db.repositories.user import UserRepository
-from auth_service.di import ConfigProvider, RepositoriesProvider
+from auth_service.di import RepositoriesProvider
 from auth_service.main import create_app
 from dishka import (
     AsyncContainer,
@@ -39,7 +40,7 @@ async def container(db: PostgresContainer) -> AsyncGenerator[AsyncContainer]:
     db.driver = "+asyncpg"  # pyright: ignore[reportAttributeAccessIssue]
     db_uri = db.get_connection_url()
     container = make_async_container(
-        ConfigProvider(),  # FIXME: not sure about this
+        TestConfigProvider(db_uri),
         TestDbProvider(db_uri),
         RepositoriesProvider(),
     )
@@ -61,6 +62,21 @@ async def client(app: FastAPI) -> AsyncGenerator[AsyncClient]:
         base_url="http://test",
     ) as ac:
         yield ac
+
+
+class TestConfigProvider(Provider):
+    db_uri: str
+
+    def __init__(self, /, db_uri: str):
+        super().__init__()
+        self.db_uri = db_uri
+
+    @provide(scope=Scope.APP)
+    def get_settings(self) -> Settings:
+        return Settings(
+            db=DbSettings(uri=self.db_uri),  # pyright: ignore[reportArgumentType]
+            jwt=JwtSettings(secret_key="test"),
+        )
 
 
 class TestDbProvider(Provider):

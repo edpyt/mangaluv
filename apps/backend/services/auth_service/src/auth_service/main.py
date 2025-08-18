@@ -33,6 +33,13 @@ def _setup_app_routes(app: FastAPI) -> None:
     app.include_router(auth_router)
     app.include_router(users_router)
 
+    # NOTE: can refactor this with [fastapi-error-map](https://github.com/ivan-borovets/fastapi-error-map)
+    from auth_service.routes.users import (
+        setup_exception_handlers_for_users_router,
+    )
+
+    setup_exception_handlers_for_users_router(app)
+
 
 def create_production_app() -> FastAPI:
     """Configure production FastAPI application instance."""
