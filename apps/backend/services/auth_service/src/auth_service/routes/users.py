@@ -19,9 +19,7 @@ router = APIRouter(prefix="/users", route_class=DishkaRoute)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
-def setup_exception_handlers_for_users_router(
-    app: FastAPI,
-) -> None:
+def setup_exception_handlers(app: FastAPI) -> None:
     """
     Set up [exception handlers](https://fastapi.tiangolo.com/tutorial/handling-errors/#reuse-fastapis-exception-handlers).
 
@@ -30,15 +28,15 @@ def setup_exception_handlers_for_users_router(
     :param app: FastAPI instance
     """
 
-    async def _could_not_validate_credentials_error(*_) -> HTTPException:
-        return HTTPException(
+    async def _could_not_validate_credentials_error(*_) -> None:
+        raise HTTPException(
             status_code=401,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
     app.exception_handler(CouldNotValidateCredentialsError)(
-        _could_not_validate_credentials_error
+        _could_not_validate_credentials_error  # pyright: ignore[reportUnknownArgumentType]
     )
 
 

@@ -35,10 +35,10 @@ def _setup_app_routes(app: FastAPI) -> None:
 
     # NOTE: can refactor this with [fastapi-error-map](https://github.com/ivan-borovets/fastapi-error-map)
     from auth_service.routes.users import (
-        setup_exception_handlers_for_users_router,
+        setup_exception_handlers as setup_exception_handlers_users,
     )
 
-    setup_exception_handlers_for_users_router(app)
+    setup_exception_handlers_users(app)
 
 
 def create_production_app() -> FastAPI:

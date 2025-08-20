@@ -67,7 +67,7 @@ async def login(
         raise HTTPException(status_code=403)
 
     token_pair = create_token_pair(
-        user.id,
+        user.email,
         access_expire_minutes=config.jwt.access_expire_minutes,
         refresh_expire_minutes=config.jwt.refresh_expire_minutes,
         secret_key=config.jwt.secret_key,
