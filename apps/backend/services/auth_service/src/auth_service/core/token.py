@@ -3,9 +3,9 @@
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import TypedDict
-from uuid import UUID, uuid4
+from uuid import uuid4
 
-from jose import jwt
+import jwt
 
 
 @dataclass(frozen=True)
@@ -33,7 +33,7 @@ class _JwtPayload(TypedDict):
 
 
 def create_token_pair(
-    user_id: UUID,
+    user_email: str,
     *,
     access_expire_minutes: int,
     refresh_expire_minutes: int,
@@ -42,20 +42,20 @@ def create_token_pair(
 ) -> TokenPair:
     """Return token pair from provided user data."""
     payload: _JwtPayload = {
-        "sub": str(user_id),
+        "sub": user_email,
         "jti": str(uuid4()),
         "iat": datetime.now(UTC),
         "exp": None,
     }
     return TokenPair(
         access=_create_access_token(
-            payload.copy(),
+            payload,
             access_expire_minutes,
             secret_key,
             algorithm,
         ),
         refresh=_create_refresh_token(
-            payload.copy(),
+            payload,
             refresh_expire_minutes,
             secret_key,
             algorithm,
@@ -70,10 +70,11 @@ def _create_access_token(
     secret_key: str,
     algorithm: str,
 ) -> JwtToken:
+    payload = payload.copy()
     expire = datetime.now(UTC) + timedelta(minutes=access_expire_minutes)
-    payload["exp"] = expire
+    payload.update({"exp": expire})
     return JwtToken(
-        token=jwt.encode(
+        token=jwt.encode(  # pyright: ignore[reportUnknownMemberType]
             payload,  # pyright: ignore[reportArgumentType]
             secret_key,
             algorithm=algorithm,
@@ -93,7 +94,7 @@ def _create_refresh_token(
     expire = datetime.now(UTC) + timedelta(minutes=refresh_expire_minutes)
     payload["exp"] = expire
     return JwtToken(
-        token=jwt.encode(
+        token=jwt.encode(  # pyright: ignore[reportUnknownMemberType]
             payload,  # pyright: ignore[reportArgumentType]
             secret_key,
             algorithm,

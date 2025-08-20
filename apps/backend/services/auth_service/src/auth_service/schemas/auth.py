@@ -22,6 +22,7 @@ class User(UserBase):
     """User from orm model."""
 
     id: UUID4
+    is_active: bool
 
     model_config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)
 
@@ -49,4 +50,4 @@ class UserLogin(BaseModel):
 class UserLoginResponse(BaseModel):
     """Login user response."""
 
-    token: str
+    access_token: str

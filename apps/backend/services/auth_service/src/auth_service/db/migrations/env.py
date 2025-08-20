@@ -2,12 +2,13 @@ import asyncio
 from logging.config import fileConfig
 
 from alembic import context
+from auth_service.config import Settings
+from auth_service.db.models import Base
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from sqlalchemy.util import await_only
 from sqlalchemy.util.concurrency import in_greenlet
-from src.auth_service.db.models import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
