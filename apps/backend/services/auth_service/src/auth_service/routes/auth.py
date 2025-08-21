@@ -82,9 +82,3 @@ async def login(
     )
 
     return auth_schemas.UserLoginResponse(access_token=token_pair.access.token)
-
-
-@router.post("/logout")
-async def logout(token: Annotated[str, Depends(oauth2_scheme)]):
-    """Logout `user` route."""
-    return token

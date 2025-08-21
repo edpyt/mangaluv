@@ -8,13 +8,25 @@ router = APIRouter()
 
 
 @dataclass(frozen=True)
-class HealthCheckResponse:
-    """Response schema for healthcheck route."""
+class ServiceHealth:
+    """Service healthcheck response."""
 
-    message: str
+    status: int
+    msg: str
 
 
-@router.get("/healthcheck")
-def healthcheck() -> HealthCheckResponse:
+@dataclass(frozen=True)
+class ServicesHealthCheckResponse:
+    """Services healthcheck response."""
+
+    auth: ServiceHealth
+    manga: ServiceHealth
+
+
+@router.get("/healthcheck", response_model=ServicesHealthCheckResponse)
+def healthcheck() -> dict[str, dict[str, int | str]]:
     """Return current server status."""
-    return HealthCheckResponse(message="OK")
+    return {
+        "auth": {"status": 200, "msg": "TODO"},
+        "manga": {"status": 200, "msg": "TODO"},
+    }

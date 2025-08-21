@@ -10,7 +10,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Services(BaseModel):
     """Separate services settings."""
 
-    auth_service: HttpUrl = HttpUrl("http://localhost:8001")
+    auth_service: HttpUrl = HttpUrl("http://auth_service:8001")
 
 
 class Settings(BaseSettings):
