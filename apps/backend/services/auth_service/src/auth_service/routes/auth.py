@@ -1,11 +1,10 @@
 """Authentication routes."""
 
 import logging
-from typing import Annotated
 
 from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaRoute
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, HTTPException, Response
 from fastapi.security import OAuth2PasswordBearer
 
 from auth_service.config import Settings
