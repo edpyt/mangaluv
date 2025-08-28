@@ -1,11 +1,12 @@
 """Authentication routes."""
 
 import logging
+from typing import Annotated
 
 from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaRoute
-from fastapi import APIRouter, HTTPException, Response
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from auth_service.config import Settings
 from auth_service.core.hash import (
@@ -38,24 +39,25 @@ async def register(
     user_data["password"] = compute_password_hash(user_data["password"])
 
     user = User(**user_data)
+    # TODO: send verify email
+    user.is_active = True
+
     if err := await repository.save(user):
         logger.exception(err)
         raise HTTPException(status_code=422, detail=repr(err))
-
-    # TODO: send verify email
 
     return auth_schemas.User.model_validate(user)
 
 
 @router.post("/login")
 async def login(
-    data: auth_schemas.UserLogin,
+    data: Annotated[OAuth2PasswordRequestForm, Depends()],
     response: Response,
     repository: FromDishka[UserRepository],
     config: FromDishka[Settings],
 ) -> auth_schemas.UserLoginResponse:
     """Login `user` route."""
-    user = await repository.find_by_email(data.email)
+    user = await repository.find_by_username(data.username)
 
     if not user or not verify_password(data.password, user.password):
         raise HTTPException(

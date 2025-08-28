@@ -137,7 +137,7 @@ async def create_user(
     # FIXME: refactor function
     create_user_data: CreateUserData = {
         "email": f"{token_urlsafe()}@mail.com",
-        "full_name": token_urlsafe(),
+        "username": token_urlsafe(),
         "password": token_urlsafe(),
         "password_confirm": "",
     }

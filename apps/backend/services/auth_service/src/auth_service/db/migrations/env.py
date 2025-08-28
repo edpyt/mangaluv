@@ -2,7 +2,6 @@ import asyncio
 from logging.config import fileConfig
 
 from alembic import context
-from auth_service.config import Settings
 from auth_service.db.models import Base
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
@@ -29,7 +28,7 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 if not config.get_main_option("sqlalchemy.url"):
-    from src.auth_service.config import Settings
+    from auth_service.config import Settings
 
     db_settings = Settings().db
     config.set_main_option("sqlalchemy.url", str(db_settings.uri))

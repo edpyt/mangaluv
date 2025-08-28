@@ -1,8 +1,8 @@
-"""create user table
+"""Init migration
 
-Revision ID: 55b63818f08b
+Revision ID: 8f415a06ca73
 Revises:
-Create Date: 2025-08-01 15:19:39.825582
+Create Date: 2025-08-28 16:04:18.653409
 
 """
 
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "55b63818f08b"
+revision: str = "8f415a06ca73"
 down_revision: str | Sequence[str] | None = None
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
@@ -24,7 +24,8 @@ def upgrade() -> None:
     op.create_table(
         "users",
         sa.Column("id", sa.Uuid(), nullable=False),
-        sa.Column("full_name", sa.String(), nullable=False),
+        sa.Column("email", sa.String(), nullable=False),
+        sa.Column("username", sa.String(), nullable=False),
         sa.Column(
             "created_at",
             sa.DateTime(),
@@ -37,7 +38,11 @@ def upgrade() -> None:
             server_default=sa.text("now()"),
             nullable=False,
         ),
+        sa.Column("is_active", sa.Boolean(), nullable=False),
+        sa.Column("password", sa.String(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("email"),
+        sa.UniqueConstraint("username"),
     )
     op.create_index(op.f("ix_users_id"), "users", ["id"], unique=False)
     # ### end Alembic commands ###

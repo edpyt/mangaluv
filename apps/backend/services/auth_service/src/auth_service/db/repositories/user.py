@@ -14,8 +14,17 @@ class UserRepository(SQLARepository):
         Find user by provided email.
 
         :param email: user email
-        :return: finded user SQLAlchemy db model or None
+        :return: User instance
         """
         stmt = select(User).where(User.email == email)
-        result = await self.session.execute(stmt)
-        return result.scalar_one_or_none()
+        return (await self.session.execute(stmt)).scalar_one_or_none()
+
+    async def find_by_username(self, username: str) -> User | None:
+        """
+        Find user by username.
+
+        :param username: username
+        :return: User instance
+        """
+        stmt = select(User).where(User.username == username)
+        return (await self.session.execute(stmt)).scalar_one_or_none()

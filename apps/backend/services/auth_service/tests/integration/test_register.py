@@ -7,7 +7,7 @@ async def test_register_user(client: AsyncClient):
     _password = token_urlsafe()
     data = {
         "email": "test_user@mail.com",
-        "full_name": "Test User",
+        "username": "Test User",
         "password": _password,
         "password_confirm": _password,
     }
@@ -17,7 +17,7 @@ async def test_register_user(client: AsyncClient):
     assert response.status_code == 201
     assert {
         "email": data["email"],
-        "full_name": data["full_name"],
+        "username": data["username"],
     }.items() <= response.json().items()
 
     response = await client.post("/register", json=data)
@@ -29,7 +29,7 @@ async def test_register_user(client: AsyncClient):
 async def test_bad_register_user(client: AsyncClient):
     data = {
         "email": "test_user@mail.com",
-        "full_name": "Test User",
+        "username": "Test User",
         "password": token_urlsafe(),
         "password_confirm": token_urlsafe(),
     }

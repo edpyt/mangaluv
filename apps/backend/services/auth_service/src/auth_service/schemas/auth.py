@@ -15,7 +15,7 @@ class UserBase(BaseModel):
     """User base pydantic model."""
 
     email: EmailStr
-    full_name: str
+    username: str
 
 
 class User(UserBase):
@@ -51,3 +51,4 @@ class UserLoginResponse(BaseModel):
     """Login user response."""
 
     access_token: str
+    token_type: str = "bearer"

@@ -6,16 +6,22 @@ from .types.user import CreateUserData
 
 
 async def test_bad_login_user(client: AsyncClient):
-    data = {"email": "test@email.com", "password": token_urlsafe()}
+    data = {"username": "bob", "password": token_urlsafe()}
 
-    response = await client.post("/login", json=data)
+    response = await client.post("/login", data=data)
 
     assert response.status_code == 400
     assert response.json() == {"detail": "Incorrect email or password"}
 
 
 async def test_login_user(client: AsyncClient, create_user: CreateUserData):
-    response = await client.post("/login", json=create_user)
+    response = await client.post(
+        "/login",
+        data={
+            "username": create_user["username"],
+            "password": create_user["password"],
+        },
+    )
 
     assert response.status_code == 200
     assert response.cookies.get("refresh")

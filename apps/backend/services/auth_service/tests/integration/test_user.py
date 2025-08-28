@@ -14,7 +14,10 @@ async def test_read_user_info(client: AsyncClient, create_user: CreateUserData):
     token = (
         await client.post(
             "/login",
-            json=create_user,
+            data={
+                "username": create_user["username"],
+                "password": create_user["password"],
+            },
         )
     ).json()["access_token"]
 
@@ -27,4 +30,4 @@ async def test_read_user_info(client: AsyncClient, create_user: CreateUserData):
     assert response.status_code == 200
     assert response_data["is_active"]
     assert response_data["email"] == create_user["email"]
-    assert response_data["full_name"] == create_user["full_name"]
+    assert response_data["username"] == create_user["username"]
