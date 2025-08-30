@@ -1,7 +1,7 @@
 services:
   gateway:
     build:
-      context: ./services/api_gateway/
+      context: ./services/gateway/
     ports: ["8000:80"]
     profiles: [dev, prod]
 
