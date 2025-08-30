@@ -1,6 +1,6 @@
 [project]
-name = "auth-service"
-version = "0.1.0"
+name = "auth"
+version = "0.1.1"
 description = "Authentication service"
 authors = [{ name = "edpyt", email = "edrsa1321s@gmail.com" }]
 requires-python = ">=3.13"
@@ -33,7 +33,7 @@ migrations = ["alembic>=1.16.4", "asyncpg>=0.30.0", "pydantic-settings>=2.10.1"]
 asyncio_mode = "auto"
 
 [tool.alembic]
-script_location = "%(here)s/src/auth_service/db/migrations"
+script_location = "%(here)s/src/auth/db/migrations"
 prepend_sys_path = ["."]
 
 [[tool.alembic.post_write_hooks]]

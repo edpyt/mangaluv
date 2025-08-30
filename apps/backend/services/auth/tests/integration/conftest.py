@@ -5,10 +5,10 @@ from secrets import token_urlsafe
 import pytest_asyncio
 from alembic.command import upgrade
 from alembic.config import Config
-from auth_service.config import DbSettings, JwtSettings, Settings
-from auth_service.db.repositories.user import UserRepository
-from auth_service.di import RepositoriesProvider
-from auth_service.main import create_app
+from auth.config import DbSettings, JwtSettings, Settings
+from auth.db.repositories.user import UserRepository
+from auth.di import RepositoriesProvider
+from auth.main import create_app
 from dishka import (
     AsyncContainer,
     FromDishka,
@@ -95,7 +95,7 @@ class TestDbProvider(Provider):
             "script_location",
             str(
                 Path(__file__).parent.parent.parent  # FIXME:
-                / "src/auth_service/db/migrations"
+                / "src/auth/db/migrations"
             ),
         )
         config.set_main_option("sqlalchemy.url", self.db_uri)

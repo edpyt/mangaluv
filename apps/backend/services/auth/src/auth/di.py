@@ -17,8 +17,8 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from auth_service.config import Settings
-from auth_service.db.repositories.user import UserRepository
+from auth.config import Settings
+from auth.db.repositories.user import UserRepository
 
 
 class ConfigProvider(Provider):

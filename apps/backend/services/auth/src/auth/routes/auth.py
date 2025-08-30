@@ -8,15 +8,15 @@ from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from auth_service.config import Settings
-from auth_service.core.hash import (
+from auth.config import Settings
+from auth.core.hash import (
     compute_password_hash,
     verify_password,
 )
-from auth_service.core.token import create_token_pair
-from auth_service.db.models import User
-from auth_service.db.repositories.user import UserRepository
-from auth_service.schemas import auth_schemas
+from auth.core.token import create_token_pair
+from auth.db.models import User
+from auth.db.repositories.user import UserRepository
+from auth.schemas import auth_schemas
 
 logger = logging.getLogger(__name__)
 router = APIRouter(route_class=DishkaRoute)
