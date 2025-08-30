@@ -34,8 +34,8 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m pytest services/api_gateway
-          python -m pytest services/auth_service
+          python -m pytest services/gateway
+          python -m pytest services/auth
 
       - name: Run basedpyright
         run: python -m basedpyright
