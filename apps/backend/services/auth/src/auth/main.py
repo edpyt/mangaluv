@@ -24,7 +24,13 @@ async def _lifespan(app: FastAPI) -> AsyncGenerator[None]:
 
 def create_app() -> FastAPI:
     """Create the FastAPI application instance."""
-    app = FastAPI(lifespan=_lifespan, title="Mangaluv authentication service.")
+    import importlib.metadata
+
+    app = FastAPI(
+        lifespan=_lifespan,
+        title="Mangaluv authentication service.",
+        version=importlib.metadata.version("auth"),
+    )
     _setup_app_routes(app)
     return app
 
