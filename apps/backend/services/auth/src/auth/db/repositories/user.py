@@ -2,8 +2,8 @@
 
 from sqlalchemy import select
 
-from auth_service.db.models import User
-from auth_service.db.repositories.base import SQLARepository
+from auth.db.models import User
+from auth.db.repositories.base import SQLARepository
 
 
 class UserRepository(SQLARepository):

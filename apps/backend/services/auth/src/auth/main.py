@@ -7,9 +7,9 @@ from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth_service.db.conn import check_db_health
-from auth_service.di import setup_container
-from auth_service.routes import auth_router, users_router
+from auth.db.conn import check_db_health
+from auth.di import setup_container
+from auth.routes import auth_router, users_router
 
 
 @asynccontextmanager
@@ -34,7 +34,7 @@ def _setup_app_routes(app: FastAPI) -> None:
     app.include_router(users_router)
 
     # NOTE: can refactor this with [fastapi-error-map](https://github.com/ivan-borovets/fastapi-error-map)
-    from auth_service.routes.users import (
+    from auth.routes.users import (
         setup_exception_handlers as setup_exception_handlers_users,
     )
 

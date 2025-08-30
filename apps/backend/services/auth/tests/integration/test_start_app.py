@@ -1,5 +1,5 @@
 import pytest
-from auth_service.main import create_production_app
+from auth.main import create_production_app
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
 

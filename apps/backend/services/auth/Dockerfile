@@ -6,7 +6,7 @@ WORKDIR /app
 
 FROM base AS run
 RUN uv sync --frozen --no-cache
-CMD ["uvicorn", "--factory", "src.auth_service.main:create_production_app", \
+CMD ["uvicorn", "--factory", "src.auth.main:create_production_app", \
   "--port", "80", "--host", "0.0.0.0"]
 
 FROM base AS migrations

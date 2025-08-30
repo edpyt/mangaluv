@@ -26,12 +26,12 @@ services:
       file: compose.override.yml
       service: auth_service
     volumes:
-      - ./services/auth_service/src:/app/src
+      - ./services/auth/src:/app/src
     command:
       [
         "uvicorn",
         "--factory",
-        "src.auth_service.main:create_production_app",
+        "src.auth.main:create_production_app",
         "--port",
         "80",
         "--host",

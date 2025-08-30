@@ -7,13 +7,10 @@ from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter, Depends, FastAPI, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 
-from auth_service.config import Settings
-from auth_service.db.repositories.user import UserRepository
-from auth_service.schemas.auth import User
-from auth_service.utils.users import (
-    CouldNotValidateCredentialsError,
-    get_current_user,
-)
+from auth.config import Settings
+from auth.db.repositories.user import UserRepository
+from auth.schemas.auth import User
+from auth.utils.users import CouldNotValidateCredentialsError, get_current_user
 
 router = APIRouter(prefix="/users", route_class=DishkaRoute)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")

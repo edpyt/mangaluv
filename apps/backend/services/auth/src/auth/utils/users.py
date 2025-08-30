@@ -3,9 +3,9 @@
 import jwt
 from jwt.exceptions import InvalidTokenError
 
-from auth_service.config import Settings
-from auth_service.db.repositories.user import UserRepository
-from auth_service.schemas.auth import User
+from auth.config import Settings
+from auth.db.repositories.user import UserRepository
+from auth.schemas.auth import User
 
 
 # NOTE: maybe move to separate `errors/` directory
