@@ -6,5 +6,6 @@ COPY . /app
 WORKDIR /app
 RUN uv sync --frozen --no-cache
 
-CMD ["/app/.venv/bin/fastapi", "run", "/app/src/gateway/__init__.py", \
+CMD ["uvicorn", "--factory", "src.gateway.main:setup_app", \
   "--port", "80", "--host", "0.0.0.0"]
+

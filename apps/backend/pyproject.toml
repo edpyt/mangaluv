@@ -1,7 +1,18 @@
-[tool.uv.workspace]
-members = ["services/*"]
+[project]
+name = "mangaluv"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = ["gateway", "auth"]
+
+[tool.uv]
+default-groups = "all"
+
+[tool.uv.sources]
+gateway = { path = "services/gateway" }
+auth = { path = "services/auth" }
 
 [dependency-groups]
+dev = ["gateway[dev]", "auth[dev]"]
 lint = ["basedpyright==1.31.0"]
 
 [tool.basedpyright]

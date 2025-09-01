@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "auth"
 version = "0.1.1"
@@ -16,18 +20,17 @@ dependencies = [
     "sqlalchemy[asyncio]>=2.0.41",
 ]
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[dependency-groups]
+[project.optional-dependencies]
 dev = [
+    "auth[migrations]",
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
     "testcontainers>=4.12.0",
-    { include-group = "migrations" },
 ]
 migrations = ["alembic>=1.16.4", "asyncpg>=0.30.0", "pydantic-settings>=2.10.1"]
+
+[dependency-groups]
+migrations = ["auth[migrations]"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
