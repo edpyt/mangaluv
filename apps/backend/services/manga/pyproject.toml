@@ -1,0 +1,15 @@
+[project]
+name = "manga"
+version = "0.1.0"
+description = "Main manga reader service"
+readme = "README.md"
+authors = [{ name = "edpyt", email = "edrsa1321s@gmail.com" }]
+requires-python = ">=3.13"
+dependencies = []
+
+# [project.scripts]
+# manga = "manga:main"
+
+[build-system]
+requires = ["uv_build>=0.8.14,<0.9.0"]
+build-backend = "uv_build"

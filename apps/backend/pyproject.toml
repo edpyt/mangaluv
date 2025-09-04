@@ -11,6 +11,11 @@ default-groups = "all"
 gateway = { path = "services/gateway" }
 auth = { path = "services/auth" }
 
+[tool.uv.workspace]
+members = [
+    "services/manga",
+]
+
 [dependency-groups]
 dev = ["gateway[dev]", "auth[dev]"]
 lint = ["basedpyright==1.31.0"]
