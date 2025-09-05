@@ -2,7 +2,7 @@
 name = "mangaluv"
 version = "0.1.0"
 requires-python = ">=3.13"
-dependencies = ["gateway", "auth"]
+dependencies = ["gateway", "auth", "manga"]
 
 [tool.uv]
 default-groups = "all"
@@ -10,11 +10,7 @@ default-groups = "all"
 [tool.uv.sources]
 gateway = { path = "services/gateway" }
 auth = { path = "services/auth" }
-
-[tool.uv.workspace]
-members = [
-    "services/manga",
-]
+manga = { path = "services/manga" }
 
 [dependency-groups]
 dev = ["gateway[dev]", "auth[dev]"]

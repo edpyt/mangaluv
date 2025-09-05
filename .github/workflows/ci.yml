@@ -36,6 +36,7 @@ jobs:
         run: |
           python -m pytest services/gateway
           python -m pytest services/auth
+          python -m pytest services/manga
 
       - name: Run basedpyright
         run: python -m basedpyright

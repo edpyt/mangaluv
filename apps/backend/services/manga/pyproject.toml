@@ -1,15 +1,31 @@
+[build-system]
+requires = ["uv_build>=0.8.14,<0.9.0"]
+build-backend = "uv_build"
+
 [project]
 name = "manga"
 version = "0.1.0"
 description = "Main manga reader service"
-readme = "README.md"
 authors = [{ name = "edpyt", email = "edrsa1321s@gmail.com" }]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "adaptix>=3.0.0b11",
+    "alembic>=1.16.5",
+    "asyncpg>=0.30.0",
+    "robyn>=0.72.1",
+    "sqlalchemy[async]>=2.0.43",
+]
 
-# [project.scripts]
-# manga = "manga:main"
+[project.optional-dependencies]
+dev = ["pytest>=8.4.1"]
 
-[build-system]
-requires = ["uv_build>=0.8.14,<0.9.0"]
-build-backend = "uv_build"
+[tool.alembic]
+script_location = "%(here)s/src/manga/infrastructure/db/migrations"
+file_template = "%%(year)d_%%(month).2d_%%(day).2d_%%(hour).2d%%(minute).2d-%%(rev)s_%%(slug)s"
+prepend_sys_path = ["."]
+
+[[tool.alembic.post_write_hooks]]
+name = "ruff"
+type = "exec"
+executable = "ruff"
+options = "check --fix REVISION_SCRIPT_FILENAME"
