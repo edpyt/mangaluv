@@ -33,7 +33,7 @@ from .types.user import CreateUserData
 
 @pytest_asyncio.fixture(scope="session")
 async def db() -> AsyncGenerator[PostgresContainer]:
-    with PostgresContainer("postgres:16.9-bookworm") as postgres:
+    with PostgresContainer("postgres:16.9-alpine") as postgres:
         yield postgres
 
 
