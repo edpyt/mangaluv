@@ -13,15 +13,11 @@ dependencies = [
     "alembic>=1.16.5",
     "asyncpg>=0.30.0",
     "robyn>=0.72.1",
-    "sqlalchemy[async]>=2.0.43",
+    "sqlalchemy>=2.0.43",
 ]
 
 [project.optional-dependencies]
-dev = [
-    "pytest>=8.4.1",
-    "pytest-asyncio>=1.1.0",
-    "testcontainers>=4.12.0",
-]
+dev = ["pytest>=8.4.1", "pytest-asyncio>=1.1.0", "testcontainers>=4.12.0"]
 
 
 [tool.pytest.ini_options]
