@@ -20,7 +20,7 @@ class MangaRepository(Repository, Protocol):
         ...
     
     @abstractmethod
-    async def get_all(self) -> list[MangaDTO]:
+    async def get_all(self, limit: int = ..., offset: int = ...) -> list[MangaDTO]:
         """Return all mangas."""
         ...
     
