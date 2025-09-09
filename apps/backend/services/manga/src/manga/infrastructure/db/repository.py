@@ -31,5 +31,11 @@ class MangaRepositoryImpl(MangaRepository):
         return None
 
     @override
-    async def get_all(self) -> list[MangaDTO]:
-        raise NotImplementedError
+    async def get_all(
+        self,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> list[MangaDTO]:
+        stmt = select(Manga).order_by(Manga.id).limit(limit).offset(offset)
+        result = await self._session.execute(stmt)
+        return [convert_manga_to_dto(manga) for manga in result.scalars()]

@@ -12,7 +12,7 @@ class Repository(Protocol):
     ...
 
 
-class MangaRepository(Repository):
+class MangaRepository(Repository, Protocol):
     """Manga repository interface."""
     @abstractmethod
     async def get_by_id(self, manga_id: int) -> MangaDTO | None:

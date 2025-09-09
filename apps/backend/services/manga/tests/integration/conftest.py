@@ -1,8 +1,8 @@
 from collections.abc import AsyncGenerator, Generator
 
 import pytest
-import pytest_asyncio
 from manga.infrastructure.db.models import Base
+from manga.infrastructure.db.repository import MangaRepositoryImpl
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -19,7 +19,7 @@ def db() -> Generator[PostgresContainer]:
         yield postgres
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest.fixture(scope="session")
 async def sqla_engine(db: PostgresContainer) -> AsyncEngine:
     engine = create_async_engine(db.get_connection_url())
     async with engine.begin() as conn:
@@ -34,7 +34,7 @@ def sqla_sessionmaker(
     return async_sessionmaker(sqla_engine, expire_on_commit=False)
 
 
-@pytest_asyncio.fixture
+@pytest.fixture
 async def sqla_session(
     sqla_engine: AsyncEngine,
     sqla_sessionmaker: async_sessionmaker[AsyncSession],
@@ -43,3 +43,8 @@ async def sqla_session(
         async with sqla_sessionmaker() as session:
             yield session
         await conn.rollback()
+
+
+@pytest.fixture
+def manga_repository(sqla_session: AsyncSession) -> MangaRepositoryImpl:
+    return MangaRepositoryImpl(sqla_session)

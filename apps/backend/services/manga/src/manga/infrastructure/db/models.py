@@ -1,6 +1,6 @@
 """Manga database ORM models."""
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -12,7 +12,11 @@ class Manga(Base):
     """Manga ORM model."""
 
     __tablename__: str = "manga"
+
     id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    description: Mapped[str | None] = mapped_column()
+
     chapters: Mapped[list["Chapter"]] = relationship(back_populates="manga")
 
 

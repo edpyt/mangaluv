@@ -18,5 +18,9 @@ class MangaRepository(Repository, Protocol):
         """Search manga by provided id."""
 
     @abstractmethod
-    async def get_all(self) -> list[MangaDTO]:
+    async def get_all(
+        self,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> list[MangaDTO]:
         """Return all mangas."""

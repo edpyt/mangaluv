@@ -517,6 +517,13 @@ dependencies = [
     { name = "sqlalchemy" },
 ]
 
+[package.optional-dependencies]
+dev = [
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "testcontainers" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "adaptix", specifier = ">=3.0.0b11" },
@@ -544,6 +551,7 @@ dependencies = [
 dev = [
     { name = "auth", extra = ["dev"] },
     { name = "gateway", extra = ["dev"] },
+    { name = "manga", extra = ["dev"] },
 ]
 lint = [
     { name = "basedpyright" },
@@ -560,6 +568,7 @@ requires-dist = [
 dev = [
     { name = "auth", extras = ["dev"], directory = "services/auth" },
     { name = "gateway", extras = ["dev"], directory = "services/gateway" },
+    { name = "manga", extras = ["dev"], directory = "services/manga" },
 ]
 lint = [{ name = "basedpyright", specifier = "==1.31.0" }]
 

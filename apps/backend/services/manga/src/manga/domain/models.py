@@ -7,7 +7,7 @@ from dataclasses import dataclass
 class Manga:
     """Main manga domain model."""
 
-    id: int
+    id: int  # TODO: change to uuid
     title: str
     description: str | None = None
 
