@@ -1,7 +1,6 @@
 # ruff: noqa: D107
 """Manga infrastructure repository module."""
 
-from dataclasses import dataclass
 from typing import override
 
 from sqlalchemy import select
@@ -13,14 +12,24 @@ from manga.infrastructure.converters.manga import convert_manga_to_dto
 from manga.infrastructure.db.models import Manga
 
 
-@dataclass
-class MangaRepositoryImpl(MangaRepository):
-    """Implementation manga repository interface."""
+class SQLARepository:
+    """SQLAlchemy base repository."""
 
     _session: AsyncSession
 
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
+
+    async def create(self, instance: object) -> object:
+        """Save SQLAlchemy ORM model."""
+        self._session.add(instance)
+        await self._session.commit()
+        await self._session.refresh(instance)
+        return instance
+
+
+class MangaRepositoryImpl(MangaRepository, SQLARepository):
+    """Implementation manga repository interface."""
 
     @override
     async def get_by_id(self, manga_id: int) -> MangaDTO | None:

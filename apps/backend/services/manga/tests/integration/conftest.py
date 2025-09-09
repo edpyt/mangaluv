@@ -6,7 +6,6 @@ from manga.infrastructure.db.repository import MangaRepositoryImpl
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
-    async_sessionmaker,
     create_async_engine,
 )
 from testcontainers.postgres import PostgresContainer
@@ -27,21 +26,15 @@ async def sqla_engine(db: PostgresContainer) -> AsyncEngine:
     return engine
 
 
-@pytest.fixture(scope="session")
-def sqla_sessionmaker(
-    sqla_engine: AsyncEngine,
-) -> async_sessionmaker[AsyncSession]:
-    return async_sessionmaker(sqla_engine, expire_on_commit=False)
-
-
 @pytest.fixture
 async def sqla_session(
     sqla_engine: AsyncEngine,
-    sqla_sessionmaker: async_sessionmaker[AsyncSession],
 ) -> AsyncGenerator[AsyncSession]:
-    async with sqla_engine.connect() as conn:
-        async with sqla_sessionmaker() as session:
-            yield session
+    async with sqla_engine.begin() as conn:
+        yield AsyncSession(
+            bind=conn,
+            join_transaction_mode="create_savepoint",
+        )
         await conn.rollback()
 
 

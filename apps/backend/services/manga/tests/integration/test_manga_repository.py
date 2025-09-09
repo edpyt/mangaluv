@@ -7,15 +7,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def test_get_by_id(
-    sqla_session: AsyncSession,
     manga_repository: MangaRepositoryImpl,
 ):
     result = await manga_repository.get_by_id(1)
 
     assert result is None
 
-    manga = Manga(title=token_urlsafe())
-    sqla_session.add(manga)
+    await manga_repository.create(Manga(title=token_urlsafe()))
 
     result = await manga_repository.get_by_id(1)
 
@@ -23,7 +21,17 @@ async def test_get_by_id(
     assert result.id == 1
 
 
-async def test_get_all(manga_repository: MangaRepositoryImpl):
+async def test_get_all(
+    sqla_session: AsyncSession,
+    manga_repository: MangaRepositoryImpl,
+):
     result = await manga_repository.get_all()
 
     assert result == []
+
+    mangas = [Manga(title=token_urlsafe()) for _ in range(10)]
+    sqla_session.add_all(mangas)
+
+    result = await manga_repository.get_all()
+
+    assert len(result) == 10
