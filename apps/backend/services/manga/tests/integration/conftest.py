@@ -15,7 +15,7 @@ from testcontainers.postgres import PostgresContainer
 @pytest.fixture(scope="session")
 def db() -> Generator[PostgresContainer]:
     with PostgresContainer("postgres:16.9-alpine") as postgres:
-        postgres.driver = "+asyncpg"  # pyright: ignore[reportAttributeAccessIssue]
+        postgres.driver = "+psycopg"  # pyright: ignore[reportAttributeAccessIssue]
         yield postgres
 
 

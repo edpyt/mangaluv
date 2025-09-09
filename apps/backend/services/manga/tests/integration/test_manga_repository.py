@@ -23,8 +23,7 @@ async def test_get_by_id(
     assert result.id == 1
 
 
-# TODO:
-# async def test_get_all(manga_repository: MangaRepositoryImpl):
-#     result = await manga_repository.get_all()
-#
-#     assert result == []
+async def test_get_all(manga_repository: MangaRepositoryImpl):
+    result = await manga_repository.get_all()
+
+    assert result == []

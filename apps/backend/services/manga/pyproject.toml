@@ -11,7 +11,7 @@ requires-python = ">=3.13"
 dependencies = [
     "adaptix>=3.0.0b11",
     "alembic>=1.16.5",
-    "asyncpg>=0.30.0",
+    "psycopg[binary,pool]>=3.2.10",
     "robyn>=0.72.1",
     "sqlalchemy>=2.0.43",
 ]

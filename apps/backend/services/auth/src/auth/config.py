@@ -10,7 +10,7 @@ class DbSettings(BaseModel):
     """Database connection config."""
 
     uri: PostgresDsn = PostgresDsn(
-        "postgresql+asyncpg://user:pass@localhost:5432/auth_db"
+        "postgresql+psycopg://user:pass@localhost:5432/auth_db"
     )
 
 
