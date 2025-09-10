@@ -6,10 +6,6 @@ jobs:
   uv-ci:
     name: python
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version:
-          - "3.13.5"
     defaults:
       run:
         working-directory: apps/backend
@@ -20,7 +16,7 @@ jobs:
       - name: "Set up Python"
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version-file: ".python-version"
 
       - name: Install uv
         uses: astral-sh/setup-uv@v6
@@ -34,7 +30,7 @@ jobs:
 
       - name: Run tests
         run: |
-          echo ${UV_PROJECT_ENVIRONMENT}
+          echo "${UV_PROJECT_ENVIRONMENT}"
           ls -la ${UV_PROJECT_ENVIRONMENT}
           # ${UV_PROJECT_ENVIRONMENT}/bin/python -m pytest services/gateway
           # ${UV_PROJECT_ENVIRONMENT}/bin/python -m pytest services/auth
