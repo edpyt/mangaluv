@@ -1,4 +1,5 @@
 from collections.abc import AsyncGenerator
+from importlib.resources import files
 from pathlib import Path
 from secrets import token_urlsafe
 
@@ -90,7 +91,9 @@ class TestDbProvider(Provider):
 
     @provide(scope=Scope.APP)
     async def _alembic_config(self) -> Config:
-        config = Config()
+        config = Config(
+            toml_file=str(files("auth").joinpath("../../pyproject.toml"))
+        )
         config.set_main_option(
             "script_location",
             str(
@@ -106,7 +109,6 @@ class TestDbProvider(Provider):
         self, alembic_config: FromDishka[Config]
     ) -> AsyncGenerator[AsyncEngine]:
         engine = create_async_engine(self.db_uri)
-        # FIXME: use alembic migrations
         async with engine.begin() as conn:
             await conn.run_sync(lambda _: upgrade(alembic_config, "head"))
         yield engine
