@@ -34,7 +34,8 @@ jobs:
 
       - name: Run tests
         run: |
-          ls -l ${UV_PROJECT_ENVIRONMENT}
+          echo ${UV_PROJECT_ENVIRONMENT}
+          ls -la ${UV_PROJECT_ENVIRONMENT}
           # ${UV_PROJECT_ENVIRONMENT}/bin/python -m pytest services/gateway
           # ${UV_PROJECT_ENVIRONMENT}/bin/python -m pytest services/auth
           # ${UV_PROJECT_ENVIRONMENT}/bin/python -m pytest services/manga
