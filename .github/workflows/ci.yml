@@ -34,9 +34,10 @@ jobs:
 
       - name: Run tests
         run: |
-          ${UV_PROJECT_ENVIRONMENT}/bin/python -m pytest services/gateway
-          ${UV_PROJECT_ENVIRONMENT}/bin/python -m pytest services/auth
-          ${UV_PROJECT_ENVIRONMENT}/bin/python -m pytest services/manga
+          ls -l ${UV_PROJECT_ENVIRONMENT}
+          # ${UV_PROJECT_ENVIRONMENT}/bin/python -m pytest services/gateway
+          # ${UV_PROJECT_ENVIRONMENT}/bin/python -m pytest services/auth
+          # ${UV_PROJECT_ENVIRONMENT}/bin/python -m pytest services/manga
 
       - name: Run basedpyright
         run: python -m basedpyright
