@@ -30,7 +30,7 @@ jobs:
       - name: Install the projects
         run: |
           export UV_PROJECT_ENVIRONMENT="${pythonLocation}"
-          uv sync --locked
+          uv sync --locked --all-packages
 
       - name: Run tests
         run: |

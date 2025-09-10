@@ -2,6 +2,14 @@ version = 1
 revision = 3
 requires-python = "==3.13.7"
 
+[manifest]
+members = [
+    "auth",
+    "gateway",
+    "manga",
+    "mangaluv",
+]
+
 [[package]]
 name = "adaptix"
 version = "3.0.0b11"
@@ -50,7 +58,7 @@ wheels = [
 [[package]]
 name = "auth"
 version = "0.1.1"
-source = { directory = "services/auth" }
+source = { editable = "services/auth" }
 dependencies = [
     { name = "bcrypt" },
     { name = "dishka" },
@@ -63,7 +71,7 @@ dependencies = [
     { name = "sqlalchemy", extra = ["asyncio"] },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
     { name = "alembic" },
     { name = "psycopg", extra = ["binary", "pool"] },
@@ -72,30 +80,39 @@ dev = [
     { name = "pytest-asyncio" },
     { name = "testcontainers" },
 ]
+migrations = [
+    { name = "alembic" },
+    { name = "psycopg", extra = ["binary", "pool"] },
+    { name = "pydantic-settings" },
+]
 
 [package.metadata]
 requires-dist = [
-    { name = "alembic", marker = "extra == 'migrations'", specifier = ">=1.16.4" },
-    { name = "auth", extras = ["migrations"], marker = "extra == 'dev'" },
     { name = "bcrypt", specifier = ">=4.3.0" },
     { name = "dishka", specifier = ">=1.6.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.116.1" },
     { name = "passlib", extras = ["bcrypt"], specifier = ">=1.7.4" },
     { name = "psycopg", extras = ["binary", "pool"], specifier = ">=3.2.10" },
-    { name = "psycopg", extras = ["binary", "pool"], marker = "extra == 'migrations'", specifier = ">=3.2.10" },
     { name = "pydantic", specifier = ">=2.11.7" },
     { name = "pydantic-settings", specifier = ">=2.10.1" },
-    { name = "pydantic-settings", marker = "extra == 'migrations'", specifier = ">=2.10.1" },
     { name = "pyjwt", specifier = ">=2.10.1" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.4.1" },
-    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=1.1.0" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0.41" },
-    { name = "testcontainers", marker = "extra == 'dev'", specifier = ">=4.12.0" },
 ]
-provides-extras = ["dev", "migrations"]
 
 [package.metadata.requires-dev]
-migrations = [{ name = "auth", extras = ["migrations"] }]
+dev = [
+    { name = "alembic", specifier = ">=1.16.4" },
+    { name = "psycopg", extras = ["binary", "pool"], specifier = ">=3.2.10" },
+    { name = "pydantic-settings", specifier = ">=2.10.1" },
+    { name = "pytest", specifier = ">=8.4.1" },
+    { name = "pytest-asyncio", specifier = ">=1.1.0" },
+    { name = "testcontainers", specifier = ">=4.12.0" },
+]
+migrations = [
+    { name = "alembic", specifier = ">=1.16.4" },
+    { name = "psycopg", extras = ["binary", "pool"], specifier = ">=3.2.10" },
+    { name = "pydantic-settings", specifier = ">=2.10.1" },
+]
 
 [[package]]
 name = "basedpyright"
@@ -328,7 +345,7 @@ wheels = [
 [[package]]
 name = "gateway"
 version = "0.1.1"
-source = { directory = "services/gateway" }
+source = { editable = "services/gateway" }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "pydantic-settings" },
@@ -473,8 +490,8 @@ wheels = [
 
 [[package]]
 name = "manga"
-version = "0.1.0"
-source = { directory = "services/manga" }
+version = "0.1.1b1"
+source = { editable = "services/manga" }
 dependencies = [
     { name = "adaptix" },
     { name = "alembic" },
@@ -483,7 +500,7 @@ dependencies = [
     { name = "sqlalchemy" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
     { name = "pytest" },
     { name = "pytest-asyncio" },
@@ -495,47 +512,30 @@ requires-dist = [
     { name = "adaptix", specifier = ">=3.0.0b11" },
     { name = "alembic", specifier = ">=1.16.5" },
     { name = "psycopg", extras = ["binary", "pool"], specifier = ">=3.2.10" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.4.1" },
-    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=1.1.0" },
     { name = "robyn", specifier = ">=0.72.1" },
     { name = "sqlalchemy", specifier = ">=2.0.43" },
-    { name = "testcontainers", marker = "extra == 'dev'", specifier = ">=4.12.0" },
 ]
-provides-extras = ["dev"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest", specifier = ">=8.4.1" },
+    { name = "pytest-asyncio", specifier = ">=1.1.0" },
+    { name = "testcontainers", specifier = ">=4.12.0" },
+]
 
 [[package]]
 name = "mangaluv"
 version = "0.1.0"
 source = { virtual = "." }
-dependencies = [
-    { name = "auth" },
-    { name = "gateway" },
-    { name = "manga" },
-]
 
 [package.dev-dependencies]
-dev = [
-    { name = "auth", extra = ["dev"] },
-    { name = "gateway", extra = ["dev"] },
-    { name = "manga", extra = ["dev"] },
-]
 lint = [
     { name = "basedpyright" },
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "auth", directory = "services/auth" },
-    { name = "gateway", directory = "services/gateway" },
-    { name = "manga", directory = "services/manga" },
-]
 
 [package.metadata.requires-dev]
-dev = [
-    { name = "auth", extras = ["dev"], directory = "services/auth" },
-    { name = "gateway", extras = ["dev"], directory = "services/gateway" },
-    { name = "manga", extras = ["dev"], directory = "services/manga" },
-]
 lint = [{ name = "basedpyright", specifier = "==1.31.0" }]
 
 [[package]]
