@@ -1,7 +1,9 @@
 from collections.abc import AsyncGenerator, Generator
+from importlib.resources import files
 
 import pytest
-from manga.infrastructure.db.models import Base
+from alembic.command import upgrade
+from alembic.config import Config
 from manga.infrastructure.db.repository import MangaRepositoryImpl
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -19,10 +21,23 @@ def db() -> Generator[PostgresContainer]:
 
 
 @pytest.fixture(scope="session")
-async def sqla_engine(db: PostgresContainer) -> AsyncEngine:
+def alembic_config(db: PostgresContainer) -> Config:
+    config = Config(
+        toml_file=str(files("manga").joinpath("../../pyproject.toml"))
+    )
+    config.set_main_option("sqlalchemy.url", db.get_connection_url())
+    return config
+
+
+@pytest.fixture(scope="session")
+async def sqla_engine(
+    db: PostgresContainer,
+    alembic_config: Config,
+) -> AsyncEngine:
     engine = create_async_engine(db.get_connection_url())
+
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(lambda _: upgrade(alembic_config, "head"))
     return engine
 
 
