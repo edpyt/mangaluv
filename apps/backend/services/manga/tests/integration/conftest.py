@@ -64,7 +64,7 @@ def manga_repository(sqla_session: AsyncSession) -> MangaRepositoryImpl:
 
 
 @pytest.fixture(scope="session")
-def _start_app() -> Generator[int]:
+def start_app_port() -> Generator[int]:
     host, port = "127.0.0.1", 8080
     with ProcessPoolExecutor() as executor:
         future = executor.submit(start_app, host=host, port=port)
@@ -76,6 +76,8 @@ def _start_app() -> Generator[int]:
 
 
 @pytest.fixture
-async def client(_start_app: int) -> AsyncGenerator[AsyncClient]:
-    async with AsyncClient(base_url=f"http://localhost:{_start_app}") as client:
+async def client(start_app_port: int) -> AsyncGenerator[AsyncClient]:
+    async with AsyncClient(
+        base_url=f"http://localhost:{start_app_port}",
+    ) as client:
         yield client
