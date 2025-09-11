@@ -1,6 +1,12 @@
 from robyn import Robyn
 
 
+def start_app(host: str = "127.0.0.1", port: int = 8080):
+    """Startup application."""
+    app = setup_app()
+    app.start(host, port)
+
+
 def setup_app() -> Robyn:
     """Return Robyn application."""
     app = Robyn(__file__)

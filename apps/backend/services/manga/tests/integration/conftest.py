@@ -1,16 +1,21 @@
 from collections.abc import AsyncGenerator, Generator
+from concurrent.futures import ProcessPoolExecutor
 from importlib.resources import files
 
 import pytest
 from alembic.command import upgrade
 from alembic.config import Config
+from httpx import AsyncClient
 from manga.infrastructure.db.repository import MangaRepositoryImpl
+from manga.presentation.api import start_app
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
     create_async_engine,
 )
 from testcontainers.postgres import PostgresContainer
+
+from tests.integration.helpers.robyn import check_server_startup
 
 
 @pytest.fixture(scope="session")
@@ -56,3 +61,21 @@ async def sqla_session(
 @pytest.fixture
 def manga_repository(sqla_session: AsyncSession) -> MangaRepositoryImpl:
     return MangaRepositoryImpl(sqla_session)
+
+
+@pytest.fixture(scope="session")
+def _start_app() -> Generator[int]:
+    host, port = "127.0.0.1", 8080
+    with ProcessPoolExecutor() as executor:
+        future = executor.submit(start_app, host=host, port=port)
+        check_server_startup(future, host, port)
+        yield port
+        future.cancel()
+        for process in executor._processes.values():
+            process.kill()
+
+
+@pytest.fixture
+async def client(_start_app: int) -> AsyncGenerator[AsyncClient]:
+    async with AsyncClient(base_url=f"http://localhost:{_start_app}") as client:
+        yield client

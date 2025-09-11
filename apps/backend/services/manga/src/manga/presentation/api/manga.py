@@ -1,11 +1,13 @@
 """Manga API routes."""
 
 from robyn import SubRouter
+from robyn.types import PathParams
 
-router = SubRouter(__file__, prefix="/")
+router = SubRouter(__file__)
 
 
-@router.get("/manga/:manga_id")
-async def get_manga(_, path_params):
+@router.get("/:manga_id")
+async def get_manga(path_params: PathParams) -> str:
     """Return manga finded by id."""
-    _manga_id = int(path_params.manga_id)
+    manga_id = path_params["manga_id"]
+    return f"hello,world. {manga_id=}"

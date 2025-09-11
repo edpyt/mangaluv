@@ -30,5 +30,6 @@ class Settings(BaseSettings):
     jwt: JwtSettings = Field(default_factory=JwtSettings)
 
     model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
-        env_nested_delimiter="__"
+        env_prefix="AUTH",
+        env_nested_delimiter="__",
     )
