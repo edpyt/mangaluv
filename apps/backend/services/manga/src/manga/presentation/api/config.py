@@ -15,5 +15,5 @@ class Settings(BaseSettings):
     test_mode: bool = False
 
     model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
-        env_prefix="MANGA_API", env_nested_delimiter="__"
+        env_prefix="MANGA_API_", env_nested_delimiter="__"
     )

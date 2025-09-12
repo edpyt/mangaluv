@@ -1,4 +1,3 @@
-import os
 from collections.abc import AsyncGenerator, Generator
 from concurrent.futures import ProcessPoolExecutor
 from importlib.resources import files
@@ -41,13 +40,17 @@ def alembic_config(db: PostgresContainer) -> Config:
 @pytest.fixture(scope="session")
 async def sqla_engine(
     db: PostgresContainer,
-    alembic_config: Config,
 ) -> AsyncEngine:
-    engine = create_async_engine(db.get_connection_url())
+    return create_async_engine(db.get_connection_url())
 
-    async with engine.begin() as conn:
+
+@pytest.fixture(scope="session", autouse=True)
+async def _start_alembic_migrations(
+    sqla_engine: AsyncEngine,
+    alembic_config: Config,
+):
+    async with sqla_engine.begin() as conn:
         await conn.run_sync(lambda _: upgrade(alembic_config, "head"))
-    return engine
 
 
 @pytest.fixture(scope="session")
@@ -79,11 +82,21 @@ def manga_repository(sqla_session: AsyncSession) -> MangaRepositoryImpl:
 
 @pytest.fixture(scope="session")
 def start_app_port(db: PostgresContainer) -> Generator[int]:
-    os.environ["MANGA_API__db_uri"] = db.get_connection_url()
-    os.environ["MANGA_API__test_mode"] = "True"
+    def _init_worker(env_vars: dict[str, str]):
+        import os
+
+        os.environ.update(env_vars)
 
     host, port = "127.0.0.1", 8080
-    with ProcessPoolExecutor() as executor:
+    with ProcessPoolExecutor(
+        initializer=_init_worker,
+        initargs=(
+            {
+                "MANGA_API_db_uri": db.get_connection_url(),
+                "MANGA_API_test_mode": "True",
+            },
+        ),
+    ) as executor:
         future = executor.submit(start_app, host=host, port=port)
         check_server_startup(future, host, port)
         yield port

@@ -26,7 +26,7 @@ def _setup_sub_routers(app: Robyn) -> None:
 
 
 def _setup_di(app: Robyn) -> None:
-    config = Settings()  # pyright: ignore[reportCallIssue]
+    config = Settings()
     engine = create_async_engine(str(config.db_uri))
     app.inject_global(
         config=config,
