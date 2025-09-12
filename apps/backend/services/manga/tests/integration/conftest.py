@@ -1,3 +1,4 @@
+import os
 from collections.abc import AsyncGenerator, Generator
 from concurrent.futures import ProcessPoolExecutor
 from importlib.resources import files
@@ -8,9 +9,12 @@ from alembic.config import Config
 from httpx import AsyncClient
 from manga.infrastructure.db.repository import MangaRepositoryImpl
 from manga.presentation.api import start_app
+from manga.presentation.api.config import Settings
+from manga.presentation.api.di.db import sqla_session_ctx
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
+    async_sessionmaker,
     create_async_engine,
 )
 from testcontainers.postgres import PostgresContainer
@@ -46,16 +50,26 @@ async def sqla_engine(
     return engine
 
 
+@pytest.fixture(scope="session")
+def sqla_sessionmaker(
+    sqla_engine: AsyncEngine,
+) -> async_sessionmaker[AsyncSession]:
+    return async_sessionmaker(sqla_engine)
+
+
 @pytest.fixture
 async def sqla_session(
     sqla_engine: AsyncEngine,
+    sqla_sessionmaker: async_sessionmaker[AsyncSession],
 ) -> AsyncGenerator[AsyncSession]:
-    async with sqla_engine.begin() as conn:
-        yield AsyncSession(
-            bind=conn,
-            join_transaction_mode="create_savepoint",
-        )
-        await conn.rollback()
+    async with sqla_session_ctx(
+        {
+            "sqla_engine": sqla_engine,
+            "sqla_sessionmaker": sqla_sessionmaker,
+            "config": Settings(test_mode=True),
+        }
+    ) as session:
+        yield session
 
 
 @pytest.fixture
@@ -64,7 +78,10 @@ def manga_repository(sqla_session: AsyncSession) -> MangaRepositoryImpl:
 
 
 @pytest.fixture(scope="session")
-def start_app_port() -> Generator[int]:
+def start_app_port(db: PostgresContainer) -> Generator[int]:
+    os.environ["MANGA_API__db_uri"] = db.get_connection_url()
+    os.environ["MANGA_API__test_mode"] = "True"
+
     host, port = "127.0.0.1", 8080
     with ProcessPoolExecutor() as executor:
         future = executor.submit(start_app, host=host, port=port)

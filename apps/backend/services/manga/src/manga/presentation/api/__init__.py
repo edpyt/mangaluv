@@ -1,4 +1,8 @@
 from robyn import Robyn
+from sqlalchemy.ext.asyncio import create_async_engine
+
+from manga.infrastructure.db.conn import sqla_session_maker
+from manga.presentation.api.config import Settings
 
 
 def start_app(host: str = "127.0.0.1", port: int = 8080):
@@ -22,6 +26,10 @@ def _setup_sub_routers(app: Robyn) -> None:
 
 
 def _setup_di(app: Robyn) -> None:
-    ...
-    # TODO::
-    # app.inject_global(sqla_engine=create_async_engine())
+    config = Settings()  # pyright: ignore[reportCallIssue]
+    engine = create_async_engine(str(config.db_uri))
+    app.inject_global(
+        config=config,
+        sqla_engine=engine,
+        sqla_sessionmaker=sqla_session_maker(engine),
+    )
