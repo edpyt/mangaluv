@@ -18,9 +18,9 @@ class MangaService:  # noqa: D101
         :param manga_id: Manga ID in persistence storage
         :return: Manga data-transfer object
         """
-        if not (manga := await self.manga_repo.get_by_id(manga_id)):
-            raise MangaNotFoundError(f"Manga with id {manga_id} not found.")
-        return manga
+        if manga := await self.manga_repo.get_by_id(manga_id):
+            return manga
+        raise MangaNotFoundError(f"Manga with id {manga_id} not found.")
 
     async def get_all_manga(self) -> list[MangaDTO]:
         """Return all mangas in persistence storage."""

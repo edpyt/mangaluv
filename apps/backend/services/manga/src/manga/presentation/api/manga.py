@@ -1,13 +1,27 @@
 """Manga API routes."""
 
-from robyn import SubRouter
+from robyn import Response, SubRouter
 from robyn.types import PathParams
 
 from manga.application.dto import MangaDTO
+from manga.domain.errors import MangaNotFoundError
 from manga.presentation.api.di import GlobalDependencies
 from manga.presentation.api.di.db import manga_service_ctx
 
 router = SubRouter(__file__)
+
+
+@router.exception
+def _handle_manga_subrouter_errors(exc: Exception) -> Response:
+    match exc:
+        case MangaNotFoundError():
+            return Response(
+                status_code=404,
+                description=str(exc),
+                headers={},
+            )
+        case _:
+            raise exc
 
 
 @router.get("/:manga_id")

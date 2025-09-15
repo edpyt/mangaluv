@@ -1,3 +1,5 @@
+from re import match
+
 from httpx import AsyncClient
 
 # TODO:
@@ -12,4 +14,5 @@ async def test_bad_get_manga(client: AsyncClient):
 
     response = await client.get("/1")
 
-    assert response.status_code == 500
+    assert response.status_code == 404
+    assert match(r"Manga.+not\sfound.+", response.text)
