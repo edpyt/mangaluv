@@ -19,6 +19,8 @@ ignore = ["**/*.lock"]
 reportUnusedCallResult = false
 reportAny = false
 reportUnknownVariableType = false
+reportUnknownArgumentType = false
+reportUnknownMemberType = false
 
 [tool.ruff]
 target-version = "py313"

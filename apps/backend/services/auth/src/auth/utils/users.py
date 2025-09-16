@@ -28,7 +28,7 @@ async def get_current_user(
     :return: User schema with data from DB
     """
     try:
-        payload = jwt.decode(  # pyright: ignore[reportUnknownMemberType]
+        payload = jwt.decode(
             token,
             config.jwt.secret_key,
             algorithms=[config.jwt.algorithm],

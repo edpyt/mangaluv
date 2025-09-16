@@ -5,6 +5,7 @@ from dataclasses import asdict
 from robyn import Response, SubRouter
 from robyn.types import PathParams
 
+from manga.application.dto import MangaDTO
 from manga.domain.errors import MangaNotFoundError
 from manga.presentation.api.di import GlobalDependencies
 from manga.presentation.api.di.db import manga_service_ctx
@@ -13,7 +14,7 @@ router = SubRouter(__file__, prefix="title")
 
 
 @router.exception
-def _handle_manga_subrouter_errors(exc: Exception) -> Response:
+def _handle_manga_subrouter_errors(exc: Exception) -> Response:  # pyright: ignore[reportUnusedFunction]
     match exc:
         case MangaNotFoundError():
             return Response(
@@ -40,6 +41,6 @@ async def get_manga(
         )
 
     async with manga_service_ctx(global_dependencies) as manga_service:
-        result = await manga_service.get_manga_by_id(int(manga_id))
+        result: MangaDTO = await manga_service.get_manga_by_id(int(manga_id))
 
     return asdict(result)
