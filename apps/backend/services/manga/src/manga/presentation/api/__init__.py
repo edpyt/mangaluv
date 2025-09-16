@@ -5,7 +5,7 @@ from manga.infrastructure.db.conn import sqla_session_maker
 from manga.presentation.api.config import Settings
 
 
-def start_app(host: str = "127.0.0.1", port: int = 8080):
+def start_app(host: str = "127.0.0.1", port: int = 8080) -> None:
     """Startup application."""
     app = setup_app()
     app.start(host, port)

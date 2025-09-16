@@ -1,5 +1,5 @@
 from collections.abc import AsyncGenerator, Generator
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import Future, ProcessPoolExecutor
 from importlib.resources import files
 from secrets import token_urlsafe
 
@@ -19,7 +19,9 @@ from sqlalchemy.ext.asyncio import (
 )
 from testcontainers.postgres import PostgresContainer
 
-from tests.integration.helpers.robyn import check_server_startup
+from tests.integration.helpers.robyn import (  # pyright: ignore[reportImplicitRelativeImport]
+    check_server_startup,
+)
 
 
 @pytest.fixture(scope="session")
@@ -46,7 +48,7 @@ async def sqla_engine(
 
 
 @pytest.fixture(scope="session", autouse=True)
-async def _start_alembic_migrations(
+async def _start_alembic_migrations(  # pyright: ignore[reportUnusedFunction]
     sqla_engine: AsyncEngine,
     alembic_config: Config,
 ):
@@ -93,7 +95,7 @@ def start_app_port(db: PostgresContainer) -> Generator[int]:
             },
         ),
     ) as executor:
-        future = executor.submit(start_app, host=host, port=port)
+        future: Future[None] = executor.submit(start_app, host=host, port=port)
         check_server_startup(future, host, port)
         yield port
         future.cancel()
