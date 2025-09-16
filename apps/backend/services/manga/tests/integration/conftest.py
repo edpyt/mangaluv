@@ -1,12 +1,13 @@
 from collections.abc import AsyncGenerator, Generator
 from concurrent.futures import ProcessPoolExecutor
 from importlib.resources import files
+from secrets import token_urlsafe
 
 import pytest
 from alembic.command import upgrade
 from alembic.config import Config
 from httpx import AsyncClient
-from manga.infrastructure.db.repository import MangaRepositoryImpl
+from manga.infrastructure.db.models import Manga
 from manga.presentation.api import start_app
 from manga.presentation.api.config import Settings
 from manga.presentation.api.di.db import sqla_session_ctx
@@ -75,11 +76,6 @@ async def sqla_session(
         yield session
 
 
-@pytest.fixture
-def manga_repository(sqla_session: AsyncSession) -> MangaRepositoryImpl:
-    return MangaRepositoryImpl(sqla_session)
-
-
 @pytest.fixture(scope="session")
 def start_app_port(db: PostgresContainer) -> Generator[int]:
     def _init_worker(env_vars: dict[str, str]):
@@ -111,3 +107,17 @@ async def client(start_app_port: int) -> AsyncGenerator[AsyncClient]:
         base_url=f"http://localhost:{start_app_port}",
     ) as client:
         yield client
+
+
+@pytest.fixture
+async def create_random_mangas(
+    sqla_sessionmaker: async_sessionmaker[AsyncSession],
+) -> AsyncGenerator[list[Manga]]:
+    async with sqla_sessionmaker() as session:
+        mangas = [Manga(title=token_urlsafe()) for _ in range(10)]
+        session.add_all(mangas)
+        await session.commit()
+        for manga in mangas:
+            await session.refresh(manga)
+        yield mangas
+        await session.reset()
