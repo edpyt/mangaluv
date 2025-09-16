@@ -1,5 +1,4 @@
 import asyncio
-import os
 from logging.config import fileConfig
 
 from alembic import context
@@ -14,7 +13,9 @@ from sqlalchemy.util.concurrency import in_greenlet
 config = context.config
 
 if not config.get_main_option("sqlalchemy.url"):
-    config.set_main_option("sqlalchemy.url", os.environ["DATABASE_URL"])
+    from manga.presentation.api.config import Settings
+
+    config.set_main_option("sqlalchemy.url", str(Settings().db_uri))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

@@ -1,14 +1,18 @@
 from secrets import token_urlsafe
 
+import pytest
 from manga.application.dto import MangaDTO
 from manga.infrastructure.db.models import Manga
 from manga.infrastructure.db.repository import MangaRepositoryImpl
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-async def test_get_by_id(
-    manga_repository: MangaRepositoryImpl,
-):
+@pytest.fixture
+def manga_repository(sqla_session: AsyncSession) -> MangaRepositoryImpl:
+    return MangaRepositoryImpl(sqla_session)
+
+
+async def test_get_by_id(manga_repository: MangaRepositoryImpl):
     result = await manga_repository.get_by_id(1)
 
     assert result is None
@@ -21,17 +25,8 @@ async def test_get_by_id(
     assert result.id == 1
 
 
-async def test_get_all(
-    sqla_session: AsyncSession,
-    manga_repository: MangaRepositoryImpl,
-):
-    result = await manga_repository.get_all()
-
-    assert result == []
-
-    mangas = [Manga(title=token_urlsafe()) for _ in range(10)]
-    sqla_session.add_all(mangas)
-
+@pytest.mark.usefixtures("create_random_mangas")
+async def test_get_all(manga_repository: MangaRepositoryImpl):
     result = await manga_repository.get_all()
 
     assert len(result) == 10

@@ -33,7 +33,7 @@ def setup_exception_handlers(app: FastAPI) -> None:
         )
 
     app.exception_handler(CouldNotValidateCredentialsError)(
-        _could_not_validate_credentials_error  # pyright: ignore[reportUnknownArgumentType]
+        _could_not_validate_credentials_error
     )
 
 

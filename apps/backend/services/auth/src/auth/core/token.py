@@ -74,7 +74,7 @@ def _create_access_token(
     expire = datetime.now(UTC) + timedelta(minutes=access_expire_minutes)
     payload.update({"exp": expire})
     return JwtToken(
-        token=jwt.encode(  # pyright: ignore[reportUnknownMemberType]
+        token=jwt.encode(
             payload,  # pyright: ignore[reportArgumentType]
             secret_key,
             algorithm=algorithm,
@@ -94,7 +94,7 @@ def _create_refresh_token(
     expire = datetime.now(UTC) + timedelta(minutes=refresh_expire_minutes)
     payload["exp"] = expire
     return JwtToken(
-        token=jwt.encode(  # pyright: ignore[reportUnknownMemberType]
+        token=jwt.encode(
             payload,  # pyright: ignore[reportArgumentType]
             secret_key,
             algorithm,
