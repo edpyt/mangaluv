@@ -20,7 +20,7 @@ class MangaService:  # noqa: D101
         """
         if manga := await self.manga_repo.get_by_id(manga_id):
             return manga
-        raise MangaNotFoundError(f"Manga with id {manga_id} not found.")
+        raise MangaNotFoundError(f"Manga with id {manga_id} not found")
 
     async def get_all_manga(self) -> list[MangaDTO]:
         """Return all mangas in persistence storage."""

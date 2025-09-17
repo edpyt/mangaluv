@@ -1,19 +1,34 @@
-from re import match
-
+import pytest
 from httpx import AsyncClient
 from manga.infrastructure.db.models import Manga
 
 
+@pytest.mark.skip("Need to add create manga route.")
+async def test_get_all_mangas(
+    client: AsyncClient,
+    create_random_mangas: list[Manga],
+):
+    response = await client.get("/titles")
+
+    assert response.status_code == 200
+    assert response.json() == [
+        {"id": manga.id} for manga in create_random_mangas
+    ]
+
+
 async def test_bad_get_manga(client: AsyncClient):
-    response = await client.get("/title/error")
+    response = await client.get("/titles/error")
 
     assert response.status_code == 400
-    assert response.text == "Provided bad manga id"
+    assert response.json() == {"success": False, "error": "Invalid manga ID"}
 
-    response = await client.get("/title/1")
+    response = await client.get("/titles/1")
 
     assert response.status_code == 404
-    assert match(r"Manga.+not\sfound.+", response.text)
+    assert response.json() == {
+        "success": False,
+        "error": "Manga with id 1 not found",
+    }
 
 
 async def test_get_manga(
@@ -22,7 +37,10 @@ async def test_get_manga(
 ):
     manga_id = create_random_mangas[0].id
 
-    response = await client.get(f"/title/{manga_id}")
+    response = await client.get(f"/titles/{manga_id}")
 
     assert response.status_code == 200
-    assert response.json()["id"] == manga_id
+    assert response.json() == {
+        "success": True,
+        "manga": {"id": create_random_mangas[0].id},
+    }
