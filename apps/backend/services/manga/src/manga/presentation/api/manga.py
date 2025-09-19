@@ -1,7 +1,9 @@
 """Manga API routes."""
 
+import json
+
 from robyn import SubRouter
-from robyn.types import PathParams
+from robyn.types import Body, PathParams
 
 from manga.application.dto import MangaDTO
 from manga.domain.errors import MangaNotFoundError
@@ -26,7 +28,6 @@ def _handle_manga_subrouter_errors(  # pyright: ignore[reportUnusedFunction]
             return {"success": False, "error": str(exc)}, {}, 400
         case MangaNotFoundError():
             return {"success": False, "error": str(exc)}, {}, 404
-
         case _:
             raise exc
 
@@ -54,4 +55,17 @@ async def get_manga(
     async with manga_service_ctx(global_dependencies) as manga_service:
         result: MangaDTO = await manga_service.get_manga_by_id(int(manga_id))
 
+    return {"success": True, "manga": result}
+
+
+# TODO: add authentication
+@router.post("/add/")
+async def create_manga(
+    body: Body,
+    global_dependencies: GlobalDependencies,
+) -> SuccessfulGetMangaResponse:
+    """Create manga by provided body."""
+    data = json.loads(body)  # pyright: ignore[reportArgumentType]
+    async with manga_service_ctx(global_dependencies) as manga_service:
+        result: MangaDTO = await manga_service.create_manga(data)
     return {"success": True, "manga": result}

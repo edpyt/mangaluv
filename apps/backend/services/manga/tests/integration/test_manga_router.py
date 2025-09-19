@@ -1,3 +1,5 @@
+from secrets import token_urlsafe
+
 import pytest
 from httpx import AsyncClient
 from manga.infrastructure.db.models import Manga
@@ -44,3 +46,11 @@ async def test_get_manga(
         "success": True,
         "manga": {"id": create_random_mangas[0].id},
     }
+
+
+async def test_create_manga(client: AsyncClient):
+    body = {"title": token_urlsafe()}
+
+    response = await client.post("/titles/add/", json=body)
+
+    assert response.status_code == 200
