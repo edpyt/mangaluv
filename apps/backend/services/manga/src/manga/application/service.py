@@ -1,6 +1,7 @@
 """Manga application-layer service."""
 
 from dataclasses import dataclass
+from uuid import UUID
 
 from manga.application.commands import CreateMangaCommand
 from manga.application.dto import MangaDTO
@@ -13,7 +14,7 @@ from manga.domain.errors import MangaNotFoundError
 class MangaService:  # noqa: D101
     manga_repo: MangaRepository
 
-    async def get_manga_by_id(self, manga_id: int) -> MangaDTO:
+    async def get_manga_by_id(self, manga_id: UUID) -> MangaDTO:
         """
         Return finded manga by provided id.
 

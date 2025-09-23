@@ -1,8 +1,8 @@
 """Manga data-transfer objects."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Self
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from manga.domain.entities import Manga
 
@@ -11,7 +11,7 @@ from manga.domain.entities import Manga
 class MangaDTO:
     """Manga data-transfer object."""
 
-    id: UUID
+    id: UUID = field(default_factory=uuid4)
     title: str
     description: str
 

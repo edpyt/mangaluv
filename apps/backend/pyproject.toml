@@ -21,6 +21,7 @@ reportAny = false
 reportUnknownVariableType = false
 reportUnknownArgumentType = false
 reportUnknownMemberType = false
+reportMissingTypeStubs = false
 
 [tool.ruff]
 target-version = "py313"

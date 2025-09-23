@@ -15,8 +15,7 @@ class Settings(BaseSettings):
     test_mode: Annotated[
         bool,
         """
-    Need for run application in separate procces with
-    SQLAlchemy nested transactions.
+    Need for run application in separate procces with specific setup.
 
     Required because Robyn has no support for running in tests.
     https://github.com/sparckles/Robyn/issues/507

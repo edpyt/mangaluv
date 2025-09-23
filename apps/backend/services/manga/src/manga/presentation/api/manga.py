@@ -1,6 +1,7 @@
 """Manga API routes."""
 
 import json
+from uuid import UUID
 
 from robyn import SubRouter
 from robyn.types import Body, PathParams
@@ -48,12 +49,16 @@ async def get_manga(
     global_dependencies: GlobalDependencies,
 ) -> SuccessfulGetMangaResponse:
     """Return manga finded by id."""
-    manga_id = path_params["manga_id"]
-    if not manga_id.isdigit():
-        raise InvalidMangaIdError()
+    try:
+        manga_id = UUID(
+            path_params["manga_id"],
+            version=4,  # TODO: uuid version in config class
+        )
+    except ValueError as e:
+        raise InvalidMangaIdError() from e
 
     async with manga_service_ctx(global_dependencies) as manga_service:
-        result: MangaDTO = await manga_service.get_manga_by_id(int(manga_id))
+        result: MangaDTO = await manga_service.get_manga_by_id(manga_id)
 
     return {"success": True, "manga": result}
 

@@ -2,6 +2,7 @@
 """Manga infrastructure repository module."""
 
 from typing import Any, override
+from uuid import UUID
 
 from sqlalchemy import Executable, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -23,11 +24,11 @@ class SQLARepository:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
-    async def _get_by_stmt(self, stmt: Executable) -> Any | None:
+    async def _get_by_stmt(self, stmt: Executable) -> Any | None:  # pyright: ignore[reportExplicitAny]
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def _create(self, instance: Any) -> Any:
+    async def _create(self, instance: Any) -> Any:  # pyright: ignore[reportExplicitAny]
         """Save SQLAlchemy ORM model."""
         self._session.add(instance)
         await self._session.commit()
@@ -45,7 +46,7 @@ class MangaRepositoryImpl(MangaRepository, SQLARepository):
         return convert_manga_to_dto(manga)
 
     @override
-    async def get_by_id(self, manga_id: int) -> MangaDTO | None:
+    async def get_by_id(self, manga_id: UUID) -> MangaDTO | None:
         stmt = select(Manga).where(Manga.id == manga_id)
         if manga := await self._get_by_stmt(stmt):
             return convert_manga_to_dto(manga)
@@ -57,6 +58,6 @@ class MangaRepositoryImpl(MangaRepository, SQLARepository):
         limit: int = 100,
         offset: int = 0,
     ) -> list[MangaDTO]:
-        stmt = select(Manga).order_by(Manga.id).limit(limit).offset(offset)
+        stmt = select(Manga).limit(limit).offset(offset)
         result = await self._session.execute(stmt)
         return [convert_manga_to_dto(manga) for manga in result.scalars()]

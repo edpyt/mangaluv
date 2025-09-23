@@ -27,7 +27,7 @@ from tests.integration.helpers.robyn import (  # pyright: ignore[reportImplicitR
 @pytest.fixture(scope="session")
 def db() -> Generator[PostgresContainer]:
     with PostgresContainer("postgres:16.9-alpine") as postgres:
-        postgres.driver = "+psycopg"  # pyright: ignore[reportAttributeAccessIssue]
+        postgres.driver = "+psycopg"
         yield postgres
 
 
@@ -116,7 +116,10 @@ async def create_random_mangas(
     sqla_sessionmaker: async_sessionmaker[AsyncSession],
 ) -> AsyncGenerator[list[Manga]]:
     async with sqla_sessionmaker() as session:
-        mangas = [Manga(title=token_urlsafe()) for _ in range(10)]
+        mangas = [
+            Manga(title=token_urlsafe(), description=token_urlsafe())
+            for _ in range(10)
+        ]
         session.add_all(mangas)
         await session.commit()
         for manga in mangas:
