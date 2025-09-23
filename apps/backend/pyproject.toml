@@ -21,10 +21,11 @@ reportAny = false
 reportUnknownVariableType = false
 reportUnknownArgumentType = false
 reportUnknownMemberType = false
+reportMissingTypeStubs = false
 
 [tool.ruff]
 target-version = "py313"
-line-length = 80
+line-length = 80                 # TODO: change line-length to 120?
 extend-exclude = ["**/typings/"]
 
 [tool.ruff.lint]

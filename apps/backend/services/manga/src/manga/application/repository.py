@@ -2,6 +2,7 @@
 
 from abc import abstractmethod
 from typing import Protocol
+from uuid import UUID
 
 from manga.application.dto import MangaDTO
 
@@ -14,7 +15,11 @@ class MangaRepository(Repository, Protocol):
     """Manga repository interface."""
 
     @abstractmethod
-    async def get_by_id(self, manga_id: int) -> MangaDTO | None:
+    async def create(self, manga_dto: MangaDTO) -> MangaDTO:
+        """Create manga in persistence by provided DTO."""
+
+    @abstractmethod
+    async def get_by_id(self, manga_id: UUID) -> MangaDTO | None:
         """Search manga by provided id."""
 
     @abstractmethod

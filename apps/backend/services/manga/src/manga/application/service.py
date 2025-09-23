@@ -1,17 +1,20 @@
 """Manga application-layer service."""
 
+from dataclasses import dataclass
+from uuid import UUID
+
+from manga.application.commands import CreateMangaCommand
 from manga.application.dto import MangaDTO
 from manga.application.repository import MangaRepository
+from manga.domain.entities import Manga
 from manga.domain.errors import MangaNotFoundError
 
 
+@dataclass(frozen=True, slots=True)
 class MangaService:  # noqa: D101
     manga_repo: MangaRepository
 
-    def __init__(self, manga_repo: MangaRepository) -> None:  # noqa: D107
-        self.manga_repo = manga_repo
-
-    async def get_manga_by_id(self, manga_id: int) -> MangaDTO:
+    async def get_manga_by_id(self, manga_id: UUID) -> MangaDTO:
         """
         Return finded manga by provided id.
 
@@ -25,3 +28,14 @@ class MangaService:  # noqa: D101
     async def get_all_manga(self) -> list[MangaDTO]:
         """Return all mangas in persistence storage."""
         return await self.manga_repo.get_all()
+
+    async def create_manga(self, manga_create: CreateMangaCommand) -> MangaDTO:
+        """
+        Create manga with domain validation.
+
+        :param manga_create: Create manga command
+        :return: Manga data-transfer object
+        """
+        entity = Manga(**manga_create)
+        manga_dto = MangaDTO.from_domain_entity(entity)
+        return await self.manga_repo.create(manga_dto)

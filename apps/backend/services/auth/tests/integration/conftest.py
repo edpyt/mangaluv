@@ -39,7 +39,7 @@ async def db() -> AsyncGenerator[PostgresContainer]:
 
 @pytest_asyncio.fixture(loop_scope="session")
 async def container(db: PostgresContainer) -> AsyncGenerator[AsyncContainer]:
-    db.driver = "+psycopg"  # pyright: ignore[reportAttributeAccessIssue]
+    db.driver = "+psycopg"
     db_uri = db.get_connection_url()
     container = make_async_container(
         TestConfigProvider(db_uri),

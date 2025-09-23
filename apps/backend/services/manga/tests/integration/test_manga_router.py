@@ -1,9 +1,9 @@
-import pytest
+from uuid import uuid4
+
 from httpx import AsyncClient
 from manga.infrastructure.db.models import Manga
 
 
-@pytest.mark.skip("Need to add create manga route.")
 async def test_get_all_mangas(
     client: AsyncClient,
     create_random_mangas: list[Manga],
@@ -11,9 +11,17 @@ async def test_get_all_mangas(
     response = await client.get("/titles")
 
     assert response.status_code == 200
-    assert response.json() == [
-        {"id": manga.id} for manga in create_random_mangas
-    ]
+    assert response.json() == {
+        "titles": [
+            {
+                "id": str(manga.id),
+                "description": manga.description,
+                "title": manga.title,
+            }
+            for manga in create_random_mangas
+        ],
+        "total": len(create_random_mangas),
+    }
 
 
 async def test_bad_get_manga(client: AsyncClient):
@@ -22,12 +30,13 @@ async def test_bad_get_manga(client: AsyncClient):
     assert response.status_code == 400
     assert response.json() == {"success": False, "error": "Invalid manga ID"}
 
-    response = await client.get("/titles/1")
+    unexpected_uuid = uuid4()
+    response = await client.get(f"/titles/{unexpected_uuid}")
 
     assert response.status_code == 404
     assert response.json() == {
         "success": False,
-        "error": "Manga with id 1 not found",
+        "error": f"Manga with id {unexpected_uuid} not found",
     }
 
 
@@ -35,12 +44,16 @@ async def test_get_manga(
     client: AsyncClient,
     create_random_mangas: list[Manga],
 ):
-    manga_id = create_random_mangas[0].id
+    manga = create_random_mangas[0]
 
-    response = await client.get(f"/titles/{manga_id}")
+    response = await client.get(f"/titles/{manga.id}")
 
     assert response.status_code == 200
     assert response.json() == {
         "success": True,
-        "manga": {"id": create_random_mangas[0].id},
+        "manga": {
+            "id": str(manga.id),
+            "title": manga.title,
+            "description": manga.description,
+        },
     }
