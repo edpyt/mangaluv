@@ -12,7 +12,9 @@ def test_add_manga(runner: CliRunner):
         "1",
     )
 
-    _result = runner.invoke(
+    result = runner.invoke(
         app,
         input="\n".join([title, description, vol, chapter]),
     )
+
+    assert result.exit_code == 0

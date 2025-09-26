@@ -504,7 +504,6 @@ dependencies = [
 [package.dev-dependencies]
 cli = [
     { name = "psycopg", extra = ["binary", "pool"] },
-    { name = "pydantic-settings" },
     { name = "typer" },
 ]
 dev = [
@@ -527,7 +526,6 @@ requires-dist = [
 [package.metadata.requires-dev]
 cli = [
     { name = "psycopg", extras = ["binary", "pool"], specifier = ">=3.2.10" },
-    { name = "pydantic-settings", specifier = ">=2.10.1" },
     { name = "typer", specifier = ">=0.16.1" },
 ]
 dev = [

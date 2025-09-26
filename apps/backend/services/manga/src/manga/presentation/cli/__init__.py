@@ -1,19 +1,20 @@
 """Manga service command-line interface."""
 
-from rich.prompt import Prompt
-from typer import Typer
+from typing import Annotated
+
+from typer import Option, Typer
 
 app = Typer()
 
 
 @app.command()
-def add_manga():
+def add_manga(
+    title: Annotated[str, Option(help="Manga title")],
+    description: Annotated[str, Option(help="Manga description")],
+    volume: Annotated[int, Option()],
+    chapter: Annotated[int, Option()],
+):
     """Add new manga to the storage."""
-    title: str = Prompt.ask(":pencil: Enter manga title")
-    description: str = Prompt.ask(":pencil: Enter manga description")
-    vol: str = Prompt.ask(":pencil: Enter manga volume")
-    chapter: str = Prompt.ask(":pencil: Enter manga chapter")
-    print(title, description, vol, chapter)  # noqa: T201
 
 
 if __name__ == "__main__":
