@@ -1,18 +1,32 @@
 """Manga service command-line interface."""
 
+from typing import Annotated
+
 from rich.prompt import Prompt
-from typer import Typer
+from sqlalchemy import create_engine, text
+from typer import Option, Typer, secho
 
 app = Typer()
 
 
 @app.command()
-def add_manga():
+def add_manga(
+    db_uri: Annotated[str, Option(help="Manga service database URI.")],
+    manga_tablename: Annotated[str, Option()] = "manga",
+):
     """Add new manga to the storage."""
-    title: str = Prompt.ask(":pencil: Enter manga title")
-    description: str = Prompt.ask(":pencil: Enter manga description")
-    image_cover: str = Prompt.ask(":camera: Enter image cover")
-    print(title, description, image_cover)  # noqa: T201 # TODO: remove this `print`
+    with create_engine(db_uri).connect() as con:
+        title: str = Prompt.ask(":pencil: Enter manga title")
+        description: str = Prompt.ask(":pencil: Enter manga description")
+        con.execute(
+            text("INSERT INTO :manga_table VALUES :title,:description"),
+            {
+                "manga_table": manga_tablename,
+                "title": title,
+                "description": description,
+            },
+        )
+    secho("New manga was added", fg="green")
 
 
 if __name__ == "__main__":
