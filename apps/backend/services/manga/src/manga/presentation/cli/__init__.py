@@ -19,15 +19,14 @@ def add_manga(
     table_name: Annotated[str, Option()] = "manga",
 ):
     """Add new manga to the storage."""
-    engine = create_engine(db_uri)
-    table = Table(table_name, metadata, autoload_with=engine)
-    with engine.connect() as con:
+    with create_engine(db_uri).connect() as con:  # NOTE: check connection first
         title: str = Prompt.ask(":pencil: Enter manga title")
-        description: str = Prompt.ask(":pencil: Enter manga description")
+        description: str = Prompt.ask(":pencil: Enter manga description\n")
+        table = Table(table_name, metadata, autoload_with=con)
         con.execute(
             insert(table).values(
                 {
-                    "id": uuid4(),  # FIXME: should be default level on db level
+                    "id": uuid4(),
                     "title": title,
                     "description": description,
                 }
