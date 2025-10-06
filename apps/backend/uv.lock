@@ -490,7 +490,7 @@ wheels = [
 
 [[package]]
 name = "manga"
-version = "0.1.1b2"
+version = "0.2.0"
 source = { editable = "services/manga" }
 dependencies = [
     { name = "adaptix" },
@@ -502,6 +502,10 @@ dependencies = [
 ]
 
 [package.dev-dependencies]
+cli = [
+    { name = "psycopg", extra = ["binary", "pool"] },
+    { name = "typer" },
+]
 dev = [
     { name = "httpx" },
     { name = "pytest" },
@@ -520,6 +524,10 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
+cli = [
+    { name = "psycopg", extras = ["binary", "pool"], specifier = ">=3.2.10" },
+    { name = "typer", specifier = ">=0.16.1" },
+]
 dev = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "pytest", specifier = ">=8.4.1" },
