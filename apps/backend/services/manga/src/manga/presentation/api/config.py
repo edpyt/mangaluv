@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     """Main settings for manga service."""
 
     db_uri: PostgresDsn = PostgresDsn(
-        "postgresql+psycopg://postgres:password@localhost:5432/manga_db"
+        "postgresql+psycopg://postgre:postgre@localhost:5432/manga_db"
     )
     test_mode: Annotated[
         bool,
